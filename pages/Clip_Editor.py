@@ -153,7 +153,7 @@ def save_video():
 
 def get_number_of_files():
     files_and_directories = os.listdir(SAVE_PATH)
-    files = [f for f in files_and_directories if os.path.isfile(os.path.join(PATH, f))]
+    files = [f for f in files_and_directories if os.path.isfile(os.path.join(SAVE_PATH, f))]
     st.session_state.number_of_files = len(files)
 
 def process_upload(video):
