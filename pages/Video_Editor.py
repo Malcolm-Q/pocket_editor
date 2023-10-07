@@ -8,8 +8,8 @@ import ffmpeg
 import subprocess
 import json
 
-PATH = 'C:\\pocket_editor_tmp\\concat_files\\'
-OUT_PATH = 'C:\\pocket_editor_tmp\\output\\'
+PATH = 'pocket_editor_tmp/concat_files/'
+OUT_PATH = 'pocket_editor_tmp/output/'
 
 def main():
     files_and_directories = os.listdir(PATH)
