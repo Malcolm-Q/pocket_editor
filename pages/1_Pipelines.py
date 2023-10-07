@@ -7,12 +7,12 @@ from pedalboard import Pedalboard, Reverb, Distortion, Delay, Bitcrush, Phaser
 from pedalboard.io import AudioFile
 import ffmpeg
 
-PATH = 'C:\\pocket_editor_tmp\\CurrentVid.mp4'
-OUTPUT = 'C:\\pocket_editor_tmp\\output.mp4'
-TMP_AUDIO = 'C:\\pocket_editor_tmp\\audio.wav'
-AUDIO_OUTPUT = 'C:\\pocket_editor_tmp\\audio_output.wav'
-SAVE_PATH = 'C:\\pocket_editor_tmp\\concat_files\\'
-UNDO_PATH = 'C:\\pocket_editor_tmp\\undoVid.mp4'
+PATH = 'pocket_editor_tmp/CurrentVid.mp4'
+OUTPUT = 'pocket_editor_tmp/output.mp4'
+TMP_AUDIO = 'pocket_editor_tmp/audio.wav'
+AUDIO_OUTPUT = 'pocket_editor_tmp/audio_output.wav'
+SAVE_PATH = 'pocket_editor_tmp/concat_files/'
+UNDO_PATH = 'pocket_editor_tmp/undoVid.mp4'
 
 st.title('Pre-Built Pipelines')
 st.write('One Click Memes')
