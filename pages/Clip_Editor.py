@@ -249,7 +249,7 @@ def download_or_get(url):
             yt = pytube.YouTube(url)
             stream = yt.streams.get_highest_resolution()
             
-            stream.download(output_path="C:\\pocket_editor_tmp\\",filename='CurrentVid.mp4')
+            stream.download(output_path="pocket_editor_tmp/",filename='CurrentVid.mp4')
             st.success("Success!")
         else:
             response = requests.get(url)
