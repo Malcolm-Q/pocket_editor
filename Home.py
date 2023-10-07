@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 
+os.mkdir('pocket_editor_tmp/')
 os.mkdir('pocket_editor_tmp/concat_files/')
 os.mkdir('pocket_editor_tmp/output/')
 
