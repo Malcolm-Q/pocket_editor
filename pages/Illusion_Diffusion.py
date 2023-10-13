@@ -147,7 +147,8 @@ def main():
       illusion_strength = st.slider('Illusion Strength',min_value=0.0,max_value=4.0,value=1.0)
       if st.session_state.generated_image is not None:
         st.image(st.session_state.generated_image)
-      st.button('Submit',on_click=make_inference,args=(pil_image,prompt,'low quality',illusion_strength))
+      if uploaded_image is not None:
+        st.button('Submit',on_click=make_inference,args=(pil_image,prompt,'low quality',illusion_strength))
 
 if __name__ == '__main__':
   main()
