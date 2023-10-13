@@ -9,6 +9,7 @@ except:
     pass
 
 st.title('Pocket Editor')
+st.write('New: Stable Diffusion and Illusion Diffusion.')
 st.divider()
 st.markdown(
     """
