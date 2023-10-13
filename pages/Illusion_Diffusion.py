@@ -112,6 +112,8 @@ def main():
   st.title('Illusion Diffusion Model')
   if 'model_loaded' not in st.session_state:
     st.session_state.model_loaded = False
+  if 'generated_image' not in st.session_state:
+    st.session_state.generated_image = None
   if not st.session_state.model_loaded:
     st.write('This may take a while to load...')
     with st.spinner():
