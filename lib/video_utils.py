@@ -8,6 +8,7 @@ import json
 from pedalboard import Pedalboard, Reverb, Distortion, Delay,Phaser, Bitcrush
 from pedalboard.io import AudioFile
 from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips
+import moviepy.video.fx.all as vfx
 
 
 PATH = os.environ['PATH']
@@ -40,26 +41,30 @@ def process_upload(video):
 def render_video(video_speed, start_time, end_time, h_res, v_res):
     with st.spinner('rendering...'):
         try:
-            video_clip = VideoFileClip(PATH).subclip(start_time, end_time)
+            video_clip = VideoFileClip(PATH)
 
-            audio_clip = video_clip.fx(audio_speedx, video_speed)
+            if start_time != 0.0 or end_time != video_clip.duration:
+                video_clip = video_clip.subclip(start_time,end_time)
 
-            video_clip = video_clip.fx(speedx, video_speed).fx(resize, (h_res, v_res))
+            if video_speed != 1.0:
+                video_clip = video_clip.fx(vfx.speedx,video_speed)
 
-            final_clip = video_clip.set_audio(audio_clip)
+            if h_res != st.session_state.resolution[0] or v_res != st.session_state.resolution[1]:
+                video_clip = video_clip.resize((h_res,v_res))
 
-            final_clip.write_videofile(OUTPUT)
+            video_clip.write_videofile(OUTPUT)
             st.success(f'Video edited and saved')
-
-            try:
-                os.remove(UNDO_PATH)
-            except Exception:
-                pass
-            os.rename(PATH,UNDO_PATH)
-            os.rename(OUTPUT, PATH)
-            get_video_info()
         except Exception as e:
             st.error(f'Error editing video: {e}')
+
+        try:
+            os.remove(UNDO_PATH)
+        except Exception:
+            pass
+        os.rename(PATH,UNDO_PATH)
+        os.rename(OUTPUT, PATH)
+        get_video_info()
+        
 
 
 def render_audio(fx_dict):

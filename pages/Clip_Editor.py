@@ -27,7 +27,7 @@ def main():
         return
     with video_tab:
         st.title('Edit Video')
-        st.button('Save To Project Manager',on_click=save_video)
+        st.button('Save To Project Manager',on_click=save_video, key='saveVid')
         with open(PATH, 'rb') as f:
             downloaded_video = f.read()
         st.video(downloaded_video)
@@ -48,7 +48,7 @@ def main():
         with res1:
             h_res = st.number_input('Horizontal Resolution',value=st.session_state.resolution[0])
         with xcol:
-            st.markdown('<h1 style='text-align: center;'>X</h1>', unsafe_allow_html=True)
+            st.markdown('<h1 style="text-align: center;">X</h1>', unsafe_allow_html=True)
         with res2:
             v_res = st.number_input('Vertical Resolution',value=st.session_state.resolution[1])
 
@@ -61,17 +61,13 @@ def main():
         st.divider()
         col1,_,col_mid,_,col2 = st.columns(5)
 
-        with col1:
-            st.button('Load Video', on_click=reverse_state)
-        with col2:
-            st.button('Edit Audio', on_click=iterate_state)
         with col_mid:
-            st.button('Render Video', on_click=render_video, args=(speed,clip_start,clip_end,h_res,v_res))
+            st.button('Render Video', key='renderVid',on_click=render_video, args=(speed,clip_start,clip_end,h_res,v_res))
             st.button('Undo', on_click=undo)
 
     with audio_tab:
         st.title('Add Audio Effects')
-        st.button('Save To Project Manager', on_click=save_video)
+        st.button('Save To Project Manager', on_click=save_video, key='saveAud')
         with open(PATH, 'rb') as f:
             downloaded_video = f.read()
         st.video(downloaded_video)
@@ -129,7 +125,7 @@ def main():
 
         col1,_,col_mid,_,col2 = st.columns(5)
         with col_mid:
-            st.button('Render Video', on_click=render_audio, args=(fx_dict,))
+            st.button('Render Video', key='renderAud',on_click=render_audio, args=(fx_dict,))
             st.button('undo')
 
 
