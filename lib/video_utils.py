@@ -87,6 +87,7 @@ def render_audio(fx_dict):
         video = VideoFileClip(PATH)
 
         video = video.set_audio(audio)
+        video.write_videofile(OUTPUT)
 
         os.remove(TMP_AUDIO)
         os.remove(AUDIO_OUTPUT)
