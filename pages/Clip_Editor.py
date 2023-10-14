@@ -120,7 +120,7 @@ def main():
 
         if st.checkbox('Bit Crush'):
             with st.expander('Settings'):
-                bit_depth = st.number_input('bit depth',value=8.0)
+                bit_depth = st.number_input('bit depth',value=0.8)
             fx_dict['bit_crush'] = Bitcrush(bit_depth)
 
         col1,_,col_mid,_,col2 = st.columns(5)
