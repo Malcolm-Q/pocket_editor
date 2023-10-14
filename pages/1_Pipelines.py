@@ -1,80 +1,16 @@
 import streamlit as st
-import pytube
-import requests
-from urllib.parse import urlparse
 import os
-from pedalboard import Pedalboard, Reverb, Distortion, Delay, Bitcrush, Phaser
-from pedalboard.io import AudioFile
-import ffmpeg
+from lib.video_utils import (
+    process_upload,
+    download_or_get,
+    render_audio,
+)
+from pedalboard import Pedalboard, Reverb, Distortion, Delay,Phaser, Bitcrush
 
-PATH = 'pocket_editor_tmp/CurrentVid.mp4'
-OUTPUT = 'pocket_editor_tmp/output.mp4'
-TMP_AUDIO = 'pocket_editor_tmp/audio.wav'
-AUDIO_OUTPUT = 'pocket_editor_tmp/audio_output.wav'
-SAVE_PATH = 'pocket_editor_tmp/concat_files/'
-UNDO_PATH = 'pocket_editor_tmp/undoVid.mp4'
+PATH = os.environ['PATH']
 
 st.title('Pre-Built Pipelines')
 st.write('One Click Memes')
-
-
-def process_upload(video):
-    if video is not None:
-        with open(PATH, 'wb') as f:
-            f.write(video.read())
-
-def download_or_get(url):
-    if not url: return
-    with st.spinner('Downloading...'):
-        parsed_url = urlparse(url)
-        youtube_domains = ["www.youtube.com", "youtu.be"]
-        if parsed_url.netloc in youtube_domains or parsed_url.netloc  and parsed_url.path == "/watch":
-            # It's a YouTube URL, so download the video using pytube
-            yt = pytube.YouTube(url)
-            stream = yt.streams.get_highest_resolution()
-            
-            stream.download(output_path="C:\\pocket_editor_tmp\\",filename='CurrentVid.mp4')
-            st.success("Success!")
-        else:
-            response = requests.get(url)
-            
-            with open(PATH, 'wb') as file:
-                file.write(response.content)
-            st.toast("Success!")
-
-
-def render_audio(fx_dict):
-    with st.spinner('rendering...'):
-        if not fx_dict:
-            st.error("No fx selected!!!")
-            return
-        (
-        ffmpeg.input(PATH)
-        .output(TMP_AUDIO, format='wav')
-        .run()
-        )
-        board = Pedalboard(list(fx_dict.values()))
-        with AudioFile(TMP_AUDIO) as f:
-            with AudioFile(AUDIO_OUTPUT, 'w', f.samplerate, f.num_channels) as o:
-                while f.tell() < f.frames:
-                    chunk = f.read(f.samplerate)
-                    effected = board(chunk, f.samplerate, reset=False)
-                    o.write(effected)
-
-        audio = ffmpeg.input(AUDIO_OUTPUT).audio
-        video = ffmpeg.input(PATH).video
-        (
-            ffmpeg.output(audio,video,OUTPUT)
-            .run(overwrite_output=True)
-        )
-        os.remove(TMP_AUDIO)
-        os.remove(AUDIO_OUTPUT)
-        try:
-            os.remove(UNDO_PATH)
-        except Exception:
-            pass
-        os.rename(PATH,UNDO_PATH)
-        os.rename(OUTPUT,PATH)
 
 
 def main():

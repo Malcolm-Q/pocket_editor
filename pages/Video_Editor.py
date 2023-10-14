@@ -1,15 +1,15 @@
 import streamlit as st
-import requests
-import pytube
-from urllib.parse import urlparse
 import os
 from streamlit_sortables import sort_items
-import ffmpeg
-import subprocess
-import json
+from lib.video_utils import (
+    process_upload,
+    download_or_get,
+    delete_files,
+    concat_video,
+)
 
-PATH = 'pocket_editor_tmp/concat_files/'
-OUT_PATH = 'pocket_editor_tmp/output/'
+PATH = os.environ['SAVE_PATH']
+OUT_PATH = os.environ['OUT_PATH']
 
 def main():
     files_and_directories = os.listdir(PATH)
@@ -48,62 +48,11 @@ def main():
         with col2:
             st.button('DELETE ALL FILES!',on_click=delete_files,args=(files,))
         st.divider()
-        if st.button('Render Video',on_click=render_video,args=(sorted_videos,)):
+        if st.button('Render Video',on_click=concat_video,args=(sorted_videos,)):
             st.download_button('Download Video',data=open(OUT_PATH+'output.mp4','rb'))
             with open(OUT_PATH+'output.mp4','rb') as f:
                 data = f.read()
             st.video(data)
-
-
-def render_video(vids):
-    ffmpeg_commands = [
-        'ffmpeg -i {} -c copy -bsf:v h264_mp4toannexb -f mpegts temp{}.ts'.format(PATH + file, index)
-        for index, file in enumerate(vids)
-    ]
-
-    concatenation_command = 'ffmpeg -i "concat:{}" -c copy {}temp.mp4'.format('|'.join('temp{}.ts'.format(index) for index, _ in enumerate(vids)), OUT_PATH)
-
-    try:
-        for cmd in ffmpeg_commands:
-            subprocess.run(cmd, shell=True, check=True)
-
-        subprocess.run(concatenation_command, shell=True, check=True)
-        if os.path.exists(OUT_PATH+'output.mp4'): os.remove(OUT_PATH+'output.mp4')
-        os.rename(OUT_PATH+'temp.mp4',OUT_PATH+'output.mp4')
-    finally:
-        for index, _ in enumerate(vids):
-            temp_file = 'temp{}.ts'.format(index)
-            if os.path.exists(temp_file):
-                os.remove(temp_file)
-
-
-
-def delete_files(files):
-    for file in files:
-        os.remove(PATH+file)
-
-def process_upload(video):
-    if video is not None:
-        with open(PATH, 'wb') as f:
-            f.write(video.read())
-
-def download_or_get(url):
-    if not url: return
-    with st.spinner('Downloading...'):
-        parsed_url = urlparse(url)
-        youtube_domains = ["www.youtube.com", "youtu.be"]
-        if parsed_url.netloc in youtube_domains or parsed_url.netloc  and parsed_url.path == "/watch":
-            yt = pytube.YouTube(url)
-            stream = yt.streams.get_highest_resolution()
-            
-            stream.download(output_path=PATH,filename=f'clip_{st.session_state.number_of_files}.mp4')
-            st.success("Success!")
-        else:
-            response = requests.get(url)
-            
-            with open(PATH+f'clip_{st.session_state.number_of_files}.mp4', 'wb') as file:
-                file.write(response.content)
-            st.toast("Success!")
 
 
 if __name__ == '__main__':

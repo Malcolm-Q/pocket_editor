@@ -36,16 +36,13 @@ def model_run_interface():
     st.session_state.generated_image = None
 
   prompt = st.text_input('Enter your prompt...',placeholder='A medieval village in Europe...')
-  negative_prompt = st.text_input('Enter a negative prompt...',value='unrealistic, cartoon, drawing')
+  negative_prompt = st.text_input('Enter a negative prompt...',value=st.session_state.default_negative)
 
   if st.session_state.generated_image is not None:
     st.image(st.session_state.generated_image)
   else:
     st.markdown('*Your Image Will Go Here...*')
   st.button('Generate...', on_click=generate_image, args=(prompt,negative_prompt))
-  if st.button('Delete Model and Free Memory'):
-    del st.session_state.stable_diff_pipe
-    
 
 
 def generate_image(prompt, negative_prompt):
