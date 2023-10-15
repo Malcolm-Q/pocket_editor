@@ -31,7 +31,7 @@ def main():
     st.title("Photo Transformation")
     if 'pix2pix' not in st.session_state:
         st.toast('Loading model...')
-        st.session_state.pix2pix = StableDiffusionInstructPix2PixPipeline.from_pretrained("timbrooks/instruct-pix2pix", torch_dtype=torch.float16, safety_checker=None).to("cuda")
+        st.session_state.pix2pix = StableDiffusionInstructPix2PixPipeline.from_pretrained("webui/instruct-pix2pix", torch_dtype=torch.float16, safety_checker=None).to("cuda")
     st.write('Photoshop images with text instructions.')
     st.divider()
     if st.session_state.edited_image is not None:
