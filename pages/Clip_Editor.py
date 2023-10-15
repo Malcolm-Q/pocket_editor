@@ -1,14 +1,12 @@
 import streamlit as st
 from lib.video_utils import *
 import os
-from pedalboard import Pedalboard, Reverb, Distortion, Delay,Phaser, Bitcrush
+from pedalboard import Pedalboard, Reverb, Distortion, Delay,Phaser, Bitcrush, PitchShift
 
 PATH = os.environ['PATH']
 
 def main():
-    load_tab, video_tab, audio_tab = st.tabs(['Load','Video','Audio'])
-    
-    with load_tab:
+    with st.expander('Load Video')'):
         st.title('Clip Editor')
         st.write('Download a youtube video or anything retrievable with a GET request.\n\nAlternatively you can upload a video.\n\nOnce a video is downloaded/uploaded you can edit it and the audio.')
         url_tab, upload_tab = st.tabs(['Link','Upload'])
@@ -25,7 +23,7 @@ def main():
 
     if not os.path.exists(PATH):
         return
-    with video_tab:
+    with st.expander('Video Effects'):
         st.title('Edit Video')
         st.button('Save To Project Manager',on_click=save_video, key='saveVid')
         with open(PATH, 'rb') as f:
@@ -65,7 +63,7 @@ def main():
             st.button('Render Video', key='renderVid',on_click=render_video, args=(speed,clip_start,clip_end,h_res,v_res))
             st.button('Undo', on_click=undo)
 
-    with audio_tab:
+    with st.expander('Audio Effects'):
         st.title('Add Audio Effects')
         st.button('Save To Project Manager', on_click=save_video, key='saveAud')
         with open(PATH, 'rb') as f:
@@ -123,6 +121,10 @@ def main():
                 bit_depth = st.number_input('bit depth',value=0.8)
             fx_dict['bit_crush'] = Bitcrush(bit_depth)
 
+        if st.checkbox('Pitch Shift'):
+            with st.expander('Settings'):
+                pitch_shift = st.number_input('pitch shift',value=3.0)
+            fx_dict['pitch_shift'] = PitchShift(pitch_shift)
         col1,_,col_mid,_,col2 = st.columns(5)
         with col_mid:
             st.button('Render Video', key='renderAud',on_click=render_audio, args=(fx_dict,))
