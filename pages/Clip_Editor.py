@@ -6,7 +6,7 @@ from pedalboard import Pedalboard, Reverb, Distortion, Delay,Phaser, Bitcrush, P
 PATH = os.environ['PATH']
 
 def main():
-    with st.expander('Load Video')'):
+    with st.expander('Load Video'):
         st.title('Clip Editor')
         st.write('Download a youtube video or anything retrievable with a GET request.\n\nAlternatively you can upload a video.\n\nOnce a video is downloaded/uploaded you can edit it and the audio.')
         url_tab, upload_tab = st.tabs(['Link','Upload'])
@@ -73,57 +73,51 @@ def main():
 
         fx_dict = {}
         if st.checkbox('Distortion'):
-            with st.expander('Settings'):
-                drive_db = st.number_input('drive db',value=25.0)
+            drive_db = st.number_input('drive db',value=25.0)
             fx_dict['distortion'] = Distortion(drive_db)
 
         if st.checkbox('Reverb'):
-            with st.expander('Settings'):
-                col1,col2,col3 = st.columns(3)
-                with col1:
-                    room_size = st.number_input('room size',value=0.5)
-                    damping = st.number_input('damping',value=0.5)
-                with col2:
-                    wet_level = st.number_input('wet level',value=0.33)
-                    dry_level = st.number_input('dry level',value=0.4)
-                with col3:
-                    width = st.number_input('width',value=1.0)
-                    freeze_mode = st.number_input('freeze mode',value=0.0)
-                reverb = Reverb(room_size,damping,wet_level,dry_level,width,freeze_mode)
+            col1,col2,col3 = st.columns(3)
+            with col1:
+                room_size = st.number_input('room size',value=0.5)
+                damping = st.number_input('damping',value=0.5)
+            with col2:
+                wet_level = st.number_input('wet level',value=0.33)
+                dry_level = st.number_input('dry level',value=0.4)
+            with col3:
+                width = st.number_input('width',value=1.0)
+                freeze_mode = st.number_input('freeze mode',value=0.0)
+            reverb = Reverb(room_size,damping,wet_level,dry_level,width,freeze_mode)
             fx_dict['reverb'] = reverb
 
         if st.checkbox('Delay'):
-            with st.expander('Settings'):
-                col1,col2,col3 = st.columns(3)
-                with col1:
-                    delay_sec = st.number_input('delay seconds', value=0.5)
-                with col2:
-                    feedback = st.number_input('feedback',value=0.0)
-                with col3:
-                    mix = st.number_input('wet/dry mix',value=0.5)
+            col1,col2,col3 = st.columns(3)
+            with col1:
+                delay_sec = st.number_input('delay seconds', value=0.5)
+            with col2:
+                feedback = st.number_input('feedback',value=0.0)
+            with col3:
+                mix = st.number_input('wet/dry mix',value=0.5)
             fx_dict['delay'] = Delay(delay_sec,feedback,mix)
 
         if st.checkbox('Phaser'):
-            with st.expander('Settings'):
-                col1,col2,col3 = st.columns(3)
-                with col1:
-                    rate_hz = st.number_input('rate hz',value=1.0)
-                    depth = st.number_input('depth',value=0.5)
-                with col2:
-                    centre_freq = st.number_input('centre freq hz',value=1300.0)
-                    phaser_feedback = st.number_input('feedback',value=0.0)
-                with col3:
-                    phaser_mix = st.number_input('wet/dry mix',value=0.5)
+            col1,col2,col3 = st.columns(3)
+            with col1:
+                rate_hz = st.number_input('rate hz',value=1.0)
+                depth = st.number_input('depth',value=0.5)
+            with col2:
+                centre_freq = st.number_input('centre freq hz',value=1300.0)
+                phaser_feedback = st.number_input('feedback',value=0.0)
+            with col3:
+                phaser_mix = st.number_input('wet/dry mix',value=0.5)
             fx_dict['phaser']=Phaser(rate_hz,depth,centre_freq,phaser_feedback,phaser_mix)
 
         if st.checkbox('Bit Crush'):
-            with st.expander('Settings'):
-                bit_depth = st.number_input('bit depth',value=0.8)
+            bit_depth = st.number_input('bit depth',value=0.8)
             fx_dict['bit_crush'] = Bitcrush(bit_depth)
 
         if st.checkbox('Pitch Shift'):
-            with st.expander('Settings'):
-                pitch_shift = st.number_input('pitch shift',value=3.0)
+            pitch_shift = st.number_input('pitch shift',value=3.0)
             fx_dict['pitch_shift'] = PitchShift(pitch_shift)
         col1,_,col_mid,_,col2 = st.columns(5)
         with col_mid:
