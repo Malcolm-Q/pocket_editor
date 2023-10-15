@@ -83,6 +83,9 @@ def render_audio(fx_dict):
                     effected = board(chunk, f.samplerate, reset=False)
                     o.write(effected)
 
+        subprocess.call(['ffmpeg', '-i', PATH, '-i', AUDIO_OUTPUT, '-c:v', 'copy', '-c:a', 'aac', f'tmp_{AUDIO_OUTPUT}'])
+        os.remove(AUDIO_OUTPUT)
+        os.rename(f'tmp_{AUDIO_OUTPUT}', AUDIO_OUTPUT)
         audio = AudioFileClip(AUDIO_OUTPUT)
         video = VideoFileClip(PATH)
 
