@@ -49,6 +49,20 @@ def main():
                     value=(0.0,float(st.session_state.duration))
                 )
             vfx_dict['subclip'] = (clip_start,clip_end)
+        
+        if st.checkbox('Apply Changes to Segment'):
+            if st.session_state.duration == None:
+                col1,_,col2 = st.columns(3)
+                with col1:
+                    clip_start = st.number_input('Segment Start')
+                with col2:
+                    clip_end = st.number_input('Segment End')
+            else:
+                clip_start, clip_end = st.slider(
+                    'Segment Video',
+                    value=(0.0,float(st.session_state.duration))
+                )
+            vfx_dict['segment'] = (clip_start,clip_end)
 
         if st.checkbox('Change Speed'):
             speed = st.number_input('Video Speed',value=1.0)

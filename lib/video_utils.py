@@ -41,7 +41,14 @@ def process_upload(video):
 def render_video(vfx_dict):
     with st.spinner('rendering...'):
         try:
-            video_clip = VideoFileClip(PATH)
+            if 'segment' in vfx_dict:
+                segment = True
+                video_clip = VideoFileClip(PATH).subclip(vfx_dict['segment'][0],vfx_dict['segment'][1])
+                video_clip_start = VideoFileClip(PATH).subclip(0,vfx_dict['segment'][0])
+                video_clip_end = VideoFileClip(PATH).subclip(vfx_dict['segment'][1],st.session_state.duration)
+                vfx_dict.pop('segment')
+            else:
+                video_clip = VideoFileClip(PATH)
 
             if 'resize' in vfx_dict:
                 video_clip = video_clip.resize(vfx_dict['resize'])
@@ -53,6 +60,9 @@ def render_video(vfx_dict):
             
             for fx in vfx_dict.values():
                 video_clip = video_clip.fx(fx[0],**fx[1])
+            
+            if segment:
+                video_clip = concatenate_videoclips([video_clip_start,video_clip,video_clip_end])
 
             video_clip.write_videofile(OUTPUT)
             st.success(f'Video edited and saved')
