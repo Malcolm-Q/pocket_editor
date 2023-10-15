@@ -7,7 +7,7 @@ import subprocess
 import json
 from pedalboard import Pedalboard, Reverb, Distortion, Delay,Phaser, Bitcrush
 from pedalboard.io import AudioFile
-from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips
+from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips, concatenate_audioclips
 import moviepy.video.fx.all as vfx
 
 
@@ -41,11 +41,19 @@ def process_upload(video):
 def render_video(vfx_dict):
     with st.spinner('rendering...'):
         try:
+            segmented_clips = []
             if 'segment' in vfx_dict:
-                segment = True
                 video_clip = VideoFileClip(PATH).subclip(vfx_dict['segment'][0],vfx_dict['segment'][1])
-                video_clip_start = VideoFileClip(PATH).subclip(0,vfx_dict['segment'][0])
-                video_clip_end = VideoFileClip(PATH).subclip(vfx_dict['segment'][1],st.session_state.duration)
+                segmented_clips.append(video_clip)
+
+                if vfx_dict['segment'][0] > 0:
+                    video_clip_start = VideoFileClip(PATH).subclip(0,vfx_dict['segment'][0])
+                    segmented_clips.append(video_clip_start)
+
+                if vfx_dict['segment'][1] < st.session_state.duration:
+                    video_clip_end = VideoFileClip(PATH).subclip(vfx_dict['segment'][1],st.session_state.duration)
+                    segmented_clips.append(video_clip_end)
+
                 vfx_dict.pop('segment')
             else:
                 video_clip = VideoFileClip(PATH)
@@ -61,8 +69,8 @@ def render_video(vfx_dict):
             for fx in vfx_dict.values():
                 video_clip = video_clip.fx(fx[0],**fx[1])
             
-            if segment:
-                video_clip = concatenate_videoclips([video_clip_start,video_clip,video_clip_end])
+            if segmented_clips:
+                video_clip = concatenate_videoclips(segmented_clips)
 
             video_clip.write_videofile(OUTPUT)
             st.success(f'Video edited and saved')
@@ -85,7 +93,21 @@ def render_audio(fx_dict):
             st.error('No fx selected')
             return
 
-        AudioFileClip(PATH).write_audiofile(TMP_AUDIO)
+        segmented_clips = []
+        if 'segment' in fx_dict:
+            audio_clip = AudioFileClip(PATH).subclip(fx_dict['segment'][0],fx_dict['segment'][1])
+            segmented_clips.append(audio_clip)
+            if fx_dict['segment'][0] > 0:
+                audio_clip_start = AudioFileClip(PATH).subclip(0,fx_dict['segment'][0])
+                segmented_clips.append(audio_clip_start)
+            if fx_dict['segment'][1] < st.session_state.duration:
+                audio_clip_end = AudioFileClip(PATH).subclip(fx_dict['segment'][1],st.session_state.duration)
+                segmented_clips.append(audio_clip_end)
+            fx_dict.pop('segment')
+        else:
+            audio_clip = AudioFileClip(PATH)
+
+        audio_clip.write_audiofile(TMP_AUDIO)
         board = Pedalboard(list(fx_dict.values()))
 
         with AudioFile(TMP_AUDIO) as f:
@@ -95,8 +117,11 @@ def render_audio(fx_dict):
                     effected = board(chunk, f.samplerate, reset=False)
                     o.write(effected)
 
-        audio = AudioFileClip(AUDIO_OUTPUT)
         video = VideoFileClip(PATH)
+        if segmented_clips:
+            audio = concatenate_audioclips(segmented_clips)
+        else:
+            audio = AudioFileClip(AUDIO_OUTPUT)
 
         video = video.set_audio(audio)
         video.write_videofile(OUTPUT)

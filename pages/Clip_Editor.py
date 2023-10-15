@@ -167,6 +167,19 @@ def main():
         st.write('Select Effects:')
 
         fx_dict = {}
+        if st.checkbox('Apply Changes to Segment'):
+            if st.session_state.duration == None:
+                col1,_,col2 = st.columns(3)
+                with col1:
+                    clip_start = st.number_input('Segment Start')
+                with col2:
+                    clip_end = st.number_input('Segment End')
+            else:
+                clip_start, clip_end = st.slider(
+                    'Segment Video',
+                    value=(0.0,float(st.session_state.duration))
+                )
+            fx_dict['segment'] = (clip_start,clip_end)
         if st.checkbox('Distortion'):
             with st.expander('Settings'):
                 drive_db = st.number_input('drive db',value=25.0)
