@@ -38,19 +38,21 @@ def process_upload(video):
         get_video_info()
 
 
-def render_video(video_speed, start_time, end_time, h_res, v_res):
+def render_video(vfx_dict):
     with st.spinner('rendering...'):
         try:
             video_clip = VideoFileClip(PATH)
 
-            if start_time != 0.0 or end_time != video_clip.duration:
-                video_clip = video_clip.subclip(start_time,end_time)
+            if 'resize' in vfx_dict:
+                video_clip = video_clip.resize(vfx_dict['resize'])
+                vfx_dict.pop('resize')
 
-            if video_speed != 1.0:
-                video_clip = video_clip.fx(vfx.speedx,video_speed)
-
-            if h_res != st.session_state.resolution[0] or v_res != st.session_state.resolution[1]:
-                video_clip = video_clip.resize((h_res,v_res))
+            if 'subclip' in vfx_dict:
+                video_clip = video_clip.subclip(vfx_dict['subclip'][0],vfx_dict['subclip'][1])
+                vfx_dict.pop('subclip')
+            
+            for fx in vfx_dict.values():
+                video_clip = video_clip.fx(fx[0],**fx[1])
 
             video_clip.write_videofile(OUTPUT)
             st.success(f'Video edited and saved')
