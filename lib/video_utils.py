@@ -77,15 +77,12 @@ def render_audio(fx_dict):
         board = Pedalboard(list(fx_dict.values()))
 
         with AudioFile(TMP_AUDIO) as f:
-            with AudioFile(AUDIO_OUTPUT, 'w', f.samplerate, f.num_channels) as o:
+            with AudioFile(AUDIO_OUTPUT, 'w', f.samplerate, f.num_channels, duration=st.session_state.duration) as o:
                 while f.tell() < f.frames:
                     chunk = f.read(f.samplerate)
                     effected = board(chunk, f.samplerate, reset=False)
                     o.write(effected)
 
-        subprocess.call(['ffmpeg', '-i', PATH, '-i', AUDIO_OUTPUT, '-c:v', 'copy', '-c:a', 'aac', f'tmp_{AUDIO_OUTPUT}'])
-        os.remove(AUDIO_OUTPUT)
-        os.rename(f'tmp_{AUDIO_OUTPUT}', AUDIO_OUTPUT)
         audio = AudioFileClip(AUDIO_OUTPUT)
         video = VideoFileClip(PATH)
 
