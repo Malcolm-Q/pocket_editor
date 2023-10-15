@@ -1,10 +1,8 @@
 import os
+os.environ["IMAGEIO_FFMPEG_EXE"] = "/usr/bin/ffmpeg"
 import streamlit as st
 
-import sys
-
 import numpy as np
-import tensorflow as tf
 from mediapy import write_video
 from PIL import Image
 from interp.eval import interpolator, util
