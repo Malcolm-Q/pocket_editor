@@ -1,10 +1,8 @@
 import os
 import streamlit as st
 
-os.system("git clone https://github.com/google-research/frame-interpolation")
 import sys
 
-sys.path.append("frame-interpolation")
 import numpy as np
 import tensorflow as tf
 from moviepy.editor import VideoClip
