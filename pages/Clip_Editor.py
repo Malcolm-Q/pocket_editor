@@ -116,9 +116,6 @@ def main():
             bit_depth = st.number_input('bit depth',value=0.8)
             fx_dict['bit_crush'] = Bitcrush(bit_depth)
 
-        if st.checkbox('Pitch Shift'):
-            pitch_shift = st.number_input('pitch shift',value=3.0)
-            fx_dict['pitch_shift'] = PitchShift(pitch_shift)
         col1,_,col_mid,_,col2 = st.columns(5)
         with col_mid:
             st.button('Render Video', key='renderAud',on_click=render_audio, args=(fx_dict,))
