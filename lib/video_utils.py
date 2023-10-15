@@ -44,11 +44,12 @@ def render_video(vfx_dict):
             segmented_clips = []
             if 'segment' in vfx_dict:
                 video_clip = VideoFileClip(PATH).subclip(vfx_dict['segment'][0],vfx_dict['segment'][1])
-                segmented_clips.append(video_clip)
 
                 if vfx_dict['segment'][0] > 0:
                     video_clip_start = VideoFileClip(PATH).subclip(0,vfx_dict['segment'][0])
                     segmented_clips.append(video_clip_start)
+
+                segmented_clips.append(video_clip)
 
                 if vfx_dict['segment'][1] < st.session_state.duration:
                     video_clip_end = VideoFileClip(PATH).subclip(vfx_dict['segment'][1],st.session_state.duration)
@@ -96,10 +97,10 @@ def render_audio(fx_dict):
         segmented_clips = []
         if 'segment' in fx_dict:
             audio_clip = AudioFileClip(PATH).subclip(fx_dict['segment'][0],fx_dict['segment'][1])
-            segmented_clips.append(audio_clip)
             if fx_dict['segment'][0] > 0:
                 audio_clip_start = AudioFileClip(PATH).subclip(0,fx_dict['segment'][0])
                 segmented_clips.append(audio_clip_start)
+            segmented_clips.append(audio_clip)
             if fx_dict['segment'][1] < st.session_state.duration:
                 audio_clip_end = AudioFileClip(PATH).subclip(fx_dict['segment'][1],st.session_state.duration)
                 segmented_clips.append(audio_clip_end)
