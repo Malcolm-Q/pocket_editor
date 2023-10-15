@@ -21,6 +21,8 @@ def main():
             _,_,_,col = st.columns(4)
             with col:
                 st.button('Submit Uploaded Video',on_click=process_upload,args=(video,))
+        _,_,col = st.columns(3)
+        with col:
             if os.path.exists(PATH):
                 st.button('Edit Video', on_click=iterate_state)
 
@@ -131,7 +133,7 @@ def main():
         col1,_,col_mid,_,col2 = st.columns(5)
 
         with col_mid:
-            st.button('Render Video', key='renderVid',on_click=render_video, args=(vfx_dict))
+            st.button('Render Video', key='renderVid',on_click=render_video, args=(vfx_dict,))
             st.button('Undo', on_click=undo)
         with col1:
             st.button('Load Video', on_click=deiterate_state)
