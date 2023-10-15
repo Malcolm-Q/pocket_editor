@@ -211,6 +211,8 @@ def deiterate_state():
 
 
 if __name__ == '__main__':
+    if 'state' not in st.session_state:
+        st.session_state.state = 1
     if 'duration' not in st.session_state:
         st.session_state.duration = None
     if 'resolution' not in st.session_state:

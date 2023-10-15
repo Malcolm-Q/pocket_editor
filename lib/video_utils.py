@@ -36,6 +36,7 @@ def process_upload(video):
         with open(PATH, 'wb') as f:
             f.write(video.read())
         get_video_info()
+        st.session_state.state = 2
 
 
 def render_video(vfx_dict):
