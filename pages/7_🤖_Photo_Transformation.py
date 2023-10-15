@@ -46,7 +46,7 @@ def main():
     input_image = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
     if input_image is not None:
         st.image(input_image, caption="Original Image", use_column_width=True)
-        instruct = st.text_input("Instructions",placeholder=random.choice(example_instructions))
+        instruct = st.text_input("Instructions",value=random.choice(example_instructions))
         col1,col2 = st.columns(2)
         with col1:
             text_cfg = st.number_input('Text CFG', min_value=2.0,max_value=10.0,step=0.5,value=7.5,help='Increase if image isn\'t changing enough')
