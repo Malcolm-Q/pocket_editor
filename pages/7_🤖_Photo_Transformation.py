@@ -4,7 +4,7 @@ import random
 
 import torch
 from PIL import Image, ImageOps
-from diffusers import StableDiffusionInstructPix2PixPipeline
+from diffusers import StableDiffusionInstructPix2PixPipeline, EulerAncestralDiscreteScheduler
 
 example_instructions = [
     "Make it a picasso painting",
@@ -31,7 +31,8 @@ def main():
     st.title("Photo Transformation")
     if 'pix2pix' not in st.session_state:
         st.toast('Loading model...')
-        st.session_state.pix2pix = StableDiffusionInstructPix2PixPipeline.from_pretrained("timbrooks/instruct-pix2pix", revision="fp16", torch_dtype=torch.float16, safety_checker=None).to("cuda")
+        st.session_state.pix2pix = StableDiffusionInstructPix2PixPipeline.from_pretrained("timbrooks/instruct-pix2pix", torch_dtype=torch.float16, safety_checker=None).to("cuda")
+        st.session_state.pix2pix.scheduler = EulerAncestralDiscreteScheduler.from_config(st.session_state.pix2pix.scheduler.config)
     st.write('Photoshop images with text instructions.')
     st.divider()
     if st.session_state.edited_image is not None:
@@ -45,7 +46,10 @@ def main():
 
     input_image = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
     if input_image is not None:
-        st.image(input_image, caption="Original Image", use_column_width=True)
+        image = Image.open(input_image)
+        image = ImageOps.exif_transpose(image)
+        image = image.convert("RGB")
+        st.image(image, caption="Original Image", use_column_width=True)
         instruct = st.text_input("Instructions",value=random.choice(example_instructions))
         col1,col2 = st.columns(2)
         with col1:
@@ -53,7 +57,7 @@ def main():
         with col2:
             image_cfg = st.number_input('Image CFG', min_value=0.5,max_value=4.0,step=0.1,value=1.5,help='Decrease if image isn\'t changing enough')
         if instruct is not None:
-            st.button("Generate", on_click=generate, args=(Image.open(input_image), instruct, 50, True, 0, True, text_cfg, image_cfg))
+            st.button("Generate", on_click=generate, args=(image, instruct, 50, True, 0, True, text_cfg, image_cfg))
 
 def generate(
     input_image: Image.Image,
@@ -75,6 +79,7 @@ def generate(
     width = int((width * factor) // 64) * 64
     height = int((height * factor) // 64) * 64
     input_image = ImageOps.fit(input_image, (width, height), method=Image.Resampling.LANCZOS)
+    st.write('Done Processing')
 
     if instruction == "":
         return [input_image, seed]
