@@ -5,7 +5,7 @@ import sys
 
 import numpy as np
 import tensorflow as tf
-from moviepy.editor import concatenate_videoclips, ImageClip
+from mediapy import write_video
 from PIL import Image
 from interp.eval import interpolator, util
 
@@ -49,9 +49,7 @@ def predict(frame1, frame2, times_to_interpolate):
     frames = list(
         util.interpolate_recursively_from_files(
             input_frames, times_to_interpolate, st.session_state.interp_model))
-    frames = [ImageClip(frame).set_duration(1/30) for frame in frames]
-    concat_clip = concatenate_videoclips(frames, method="compose")
-    concat_clip.write_videofile("out.mp4", fps=30)
+    write_video("out.mp4", frames, fps=30)
     return "out.mp4"
 
 def main():

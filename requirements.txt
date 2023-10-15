@@ -9,3 +9,4 @@ accelerate
 moviepy
 image-tools
 huggingface-hub
+mediapy
