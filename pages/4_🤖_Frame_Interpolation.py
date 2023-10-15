@@ -49,9 +49,10 @@ def predict(frame1, frame2, times_to_interpolate):
     frames = list(
         util.interpolate_recursively_from_files(
             input_frames, times_to_interpolate, st.session_state.interp_model))
+    st.write
     disk_frames = []
     for i, frame in enumerate(frames):
-        Image.fromarray(frame).save(f"frame{i}.png")
+        Image.fromarray((frame*255).astype(np.uint8)).save(f"frame{i}.png")
         disk_frames.append(f"frame{i}.png")
     frames = [ImageClip(frame).set_duration(1/30) for frame in disk_frames]
     concat_clip = concatenate_videoclips(frames, method="compose")
