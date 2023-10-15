@@ -7,7 +7,7 @@ import sys
 sys.path.append("frame-interpolation")
 import numpy as np
 import tensorflow as tf
-import mediapy
+from moviepy.editor import VideoClip
 from PIL import Image
 from eval import interpolator, util
 
@@ -51,8 +51,10 @@ def predict(frame1, frame2, times_to_interpolate):
     frames = list(
         util.interpolate_recursively_from_files(
             input_frames, times_to_interpolate, st.session_state.interp_model))
+    video = VideoClip(lambda t: frames[int(t * 30)], duration=len(frames) / 30)
 
-    mediapy.write_video("out.mp4", frames, fps=30)
+# Write the video to a file
+    video.write_videofile("out.mp4", fps=30)
     return "out.mp4"
 
 def main():

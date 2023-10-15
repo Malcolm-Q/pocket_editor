@@ -26,6 +26,8 @@ example_instructions = [
 ]
 
 def main():
+    if 'random_example' not in st.session_state:
+        st.session_state.random_example = random.choice(example_instructions)
     if 'edited_image' not in st.session_state:
         st.session_state.edited_image = None
     st.title("Photo Transformation")
@@ -36,8 +38,8 @@ def main():
     st.write('Photoshop images with text instructions.')
     st.divider()
     if st.session_state.edited_image is not None:
-        st.image(st.session_state.edited_image, caption="Edited Image", use_column_width=True)
-        with st.exapnder('Image doesn\'t look right?'):
+        st.image(st.session_state.edited_image, caption=st.session_state.instruct, use_column_width=True)
+        with st.expander('Image doesn\'t look right?'):
             st.write(
                 'If the image isn\'t changing enough, try increasing the text cfg and lowering the image cfg. '
                 'If the image is changing too much, try decreasing the text cfg and increasing the image cfg.'
@@ -50,14 +52,14 @@ def main():
         image = ImageOps.exif_transpose(image)
         image = image.convert("RGB")
         st.image(image, caption="Original Image", use_column_width=True)
-        instruct = st.text_input("Instructions",value=random.choice(example_instructions))
+        st.session_state.instruct = st.text_input("Instructions",placeholder=st.session_state.random_example)
         col1,col2 = st.columns(2)
         with col1:
             text_cfg = st.number_input('Text CFG', min_value=2.0,max_value=10.0,step=0.5,value=7.5,help='Increase if image isn\'t changing enough')
         with col2:
             image_cfg = st.number_input('Image CFG', min_value=0.5,max_value=4.0,step=0.1,value=1.5,help='Decrease if image isn\'t changing enough')
-        if instruct is not None:
-            st.button("Generate", on_click=generate, args=(image, instruct, 50, True, 0, True, text_cfg, image_cfg))
+        if st.session_state.instruct is not None:
+            st.button("Generate", on_click=generate, args=(image, st.session_state.instruct, 50, True, 0, True, text_cfg, image_cfg))
 
 def generate(
     input_image: Image.Image,
