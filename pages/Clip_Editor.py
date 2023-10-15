@@ -123,10 +123,10 @@ def main():
             vfx_dict['symmetrize'] = (vfx.time_symmetrize,{})
         
         if st.checkbox('Supersample'):
-            st.write('Motion Blur Type Effect\nHigher arg values will take longer to render')
+            st.write('Motion Blur Type Effect\nThis can take a while to render.\nNot recommended for long videos.')
             d = st.number_input('d',value=3)
-            n_frames = st.number_input('n_frames',value=10)
-            vfx_dict['supersample'] = (vfx.supersample,{'d':d,'n_frames':n_frames})
+            n_frames = st.number_input('n_frames',value=5)
+            vfx_dict['supersample'] = (vfx.supersample,{'d':d,'nframes':n_frames})
         
         if st.checkbox('Contrast Correction'):
             luminosity = st.number_input('Luminosity',value=0.0)
