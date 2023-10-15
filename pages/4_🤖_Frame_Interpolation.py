@@ -7,7 +7,7 @@ import numpy as np
 import tensorflow as tf
 from moviepy.editor import VideoClip
 from PIL import Image
-from eval import interpolator, util
+from interp.eval import interpolator, util
 
 from huggingface_hub import snapshot_download
 
@@ -15,7 +15,7 @@ from image_tools.sizes import resize_and_crop
 
 
 if 'interp_model' not in st.session_state:
-    model = interpolator.Interpolator(snapshot_download(repo_id="akhaliq/frame-interpolation-film-style"), None)
+    st.session_state.interp_model = interpolator.Interpolator(snapshot_download(repo_id="akhaliq/frame-interpolation-film-style"), None)
 
 def resize(width, img):
     basewidth = width
@@ -63,8 +63,12 @@ def main():
     col1, col2 = st.columns(2)
     with col1:
         frame1 = st.file_uploader('Frame 1')
+        if frame1:
+            st.image(frame1)
     with col2:
         frame2 = st.file_uploader('Frame 2')
+        if frame2:
+            st.image(frame2)
     
     if frame1 and frame2:
         times_to_interpolate = st.slider('Interpolation Amount', 1, 7, 4,help='The higher the number, the longer and smoother the output will be.')
