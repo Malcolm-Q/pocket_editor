@@ -16,7 +16,7 @@ def main():
     files = [f for f in files_and_directories if os.path.isfile(os.path.join(PATH, f))]
 
     st.title('Video Editor')
-    st.write('Clips you edit can be saved in "Clip Manager" by pressing the "save to project manager" button.\n\nAlternatively you can upload/download videos below.')
+    st.write('Clips you edit can be saved in "Clip Manager" by pressing the "save to Clip Manager" button.\n\nAlternatively you can upload/download videos below.')
     url_tab, upload_tab = st.tabs(['Link','Upload'])
     with url_tab:
         url = st.text_input('Youtube/discord/other video',placeholder='Paste link here...')

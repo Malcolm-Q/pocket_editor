@@ -30,7 +30,7 @@ def main():
 
     if st.session_state.state == 2:
         st.title('Edit Video')
-        st.button('Save To Project Manager',on_click=save_video, key='saveVid')
+        st.button('Save To Clip Manager',on_click=save_video, key='saveVid')
         with open(PATH, 'rb') as f:
             downloaded_video = f.read()
         st.video(downloaded_video)
@@ -160,7 +160,7 @@ def main():
 
     if st.session_state.state == 3:
         st.title('Add Audio Effects')
-        st.button('Save To Project Manager', on_click=save_video, key='saveAud')
+        st.button('Save To Clip Manager', on_click=save_video, key='saveAud')
         with open(PATH, 'rb') as f:
             downloaded_video = f.read()
         st.video(downloaded_video)

@@ -7,3 +7,5 @@ transformers
 scipy
 accelerate
 moviepy
+image-tools
+huggingface-hub

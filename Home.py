@@ -29,6 +29,11 @@ st.markdown(
 - More AI Pages
 - VFX pipelines and more complex pipelines
 
+[ Update 0.3.5 ]
+- Frame Interpolation Model
+- Photo Transformation Model
+    - Upload an image and enter an instruction of how you want it modified.
+
 [ Update 0.3.0 ]
 - Moviepy Migration
     - 13 new vfx
