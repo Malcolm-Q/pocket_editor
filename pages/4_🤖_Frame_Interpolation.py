@@ -69,3 +69,6 @@ def main():
     if frame1 and frame2:
         times_to_interpolate = st.slider('Interpolation Amount', 1, 7, 4,help='The higher the number, the longer and smoother the output will be.')
         st.button('Interpolate', on_click=lambda: st.video(predict(frame1, frame2, times_to_interpolate)))
+
+if __name__ == "__main__":
+    main()

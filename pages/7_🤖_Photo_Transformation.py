@@ -53,7 +53,7 @@ def main():
         with col2:
             image_cfg = st.number_input('Image CFG', min_value=0.5,max_value=4.0,step=0.1,value=1.5,help='Decrease if image isn\'t changing enough')
         if instruct is not None:
-            st.button("Generate", on_click=generate, args=[input_image, instruct, 50, True, 0, True, text_cfg, image_cfg])
+            st.button("Generate", on_click=generate, args=(Image.open(input_image), instruct, 50, True, 0, True, text_cfg, image_cfg))
 
 def generate(
     input_image: Image.Image,
@@ -86,3 +86,6 @@ def generate(
         num_inference_steps=steps, generator=generator,
     ).images[0]
     return [seed, text_cfg_scale, image_cfg_scale, edited_image]
+
+if __name__ == '__main__':
+    main()
