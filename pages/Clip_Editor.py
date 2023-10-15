@@ -7,6 +7,8 @@ import moviepy.video.fx.all as vfx
 PATH = os.environ['PATH']
 
 def main():
+    if not os.path.exists(PATH):
+        st.session_state.state = 1
     if st.session_state.state == 1:
         st.title('Clip Editor')
         st.write('Download a youtube video or anything retrievable with a GET request.\n\nAlternatively you can upload a video.\n\nOnce a video is downloaded/uploaded you can edit it and the audio.')
@@ -87,7 +89,7 @@ def main():
             with col2:
                 x2 = st.number_input('x2',value=st.session_state.resolution[0])
                 y2 = st.number_input('y2',value=st.session_state.resolution[1])
-            vfx_dict['freeze_region'] = (vfx.freeze_region,{'t':time,'region':(x1,y1,x2,y2)})
+            vfx_dict['freeze_region'] = (vfx.freeze_region,{'t':freeze_time,'region':(x1,y1,x2,y2)})
         
         if st.checkbox('Fade In'):
             fade_duration = st.number_input('Fade In Duration',value=1.0)
@@ -121,8 +123,10 @@ def main():
             vfx_dict['symmetrize'] = (vfx.time_symmetrize,{})
         
         if st.checkbox('Supersample'):
-            st.write('Motion Blur Type Effect')
-            vfx_dict['supersample'] = (vfx.supersample,{})
+            st.write('Motion Blur Type Effect\nHigher arg values will take longer to render')
+            d = st.number_input('d',value=3)
+            n_frames = st.number_input('n_frames',value=10)
+            vfx_dict['supersample'] = (vfx.supersample,{'d':d,'n_frames':n_frames})
         
         if st.checkbox('Contrast Correction'):
             luminosity = st.number_input('Luminosity',value=0.0)
