@@ -80,7 +80,7 @@ def generate(
         return [input_image, seed]
 
     generator = torch.manual_seed(seed)
-    st.session_state.edited_image = st.session_state.pix2pixe(
+    st.session_state.edited_image = st.session_state.pix2pix(
         instruction, image=input_image,
         guidance_scale=text_cfg_scale, image_guidance_scale=image_cfg_scale,
         num_inference_steps=steps, generator=generator,
