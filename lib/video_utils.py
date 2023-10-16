@@ -183,7 +183,7 @@ def get_video_info():
 
 
 def concat_video(vids):
-    concat_clip = concatenate_videoclips([VideoFileClip(OUT_PATH+vid) for vid in vids])
+    concat_clip = concatenate_videoclips([VideoFileClip(SAVE_PATH+vid) for vid in vids])
     concat_clip.write_videofile(OUT_PATH+'temp.mp4')
     if os.path.exists(OUT_PATH+'output.mp4'): os.remove(OUT_PATH+'output.mp4')
     os.rename(OUT_PATH+'temp.mp4',OUT_PATH+'output.mp4')
