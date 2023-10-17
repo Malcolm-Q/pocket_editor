@@ -130,8 +130,12 @@ def main():
             vfx_dict['mirror'] = (vfx.mirror_y,{})
         
         if st.checkbox('Loop'):
-            loop_duration = int(st.number_input('Number of Time to Loop',value=1,min_value=1))
-            vfx_dict['loop'] = (vfx.loop,{'n':loop_duration})
+            loop_duration = st.number_input('Loop Duration',value=st.session_state.duration, min_value=st.session_state.duration)
+            vfx_dict['loop'] = (vfx.loop,{'duration':loop_duration})
+        
+        if st.checkbox('Time Symmetrize'):
+            st.write('This effect will play the video forwards and then backwards')
+            vfx_dict['symmetrize'] = (vfx.time_symmetrize,{})
         
         if st.checkbox('Supersample'):
             st.write('Motion Blur Type Effect\nThis can take a while to render.\nNot recommended for long videos.')
