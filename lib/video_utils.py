@@ -44,19 +44,19 @@ def process_upload(video):
 def render_video(vfx_dict):
     with st.spinner('rendering...'):
         try:
-            segmented_clips = []
+            segmented_clips = {}
             if 'segment' in vfx_dict:
                 video_clip = VideoFileClip(PATH).subclip(vfx_dict['segment'][0],vfx_dict['segment'][1])
 
                 if vfx_dict['segment'][0] > 0:
                     video_clip_start = VideoFileClip(PATH).subclip(0,vfx_dict['segment'][0])
-                    segmented_clips.append(video_clip_start)
+                    segmented_clip['start'] = video_clip_start
 
-                segmented_clips.append(video_clip)
+                segmented_clips['mid'] = video_clip
 
                 if vfx_dict['segment'][1] < st.session_state.duration:
                     video_clip_end = VideoFileClip(PATH).subclip(vfx_dict['segment'][1],st.session_state.duration)
-                    segmented_clips.append(video_clip_end)
+                    segmented_clips['end'].video_clip_end
 
                 vfx_dict.pop('segment')
             else:
@@ -85,20 +85,22 @@ def render_video(vfx_dict):
                 video_clip = video_clip.fx(fx[0],**fx[1])
             
             if segmented_clips:
-                video_clip = concatenate_videoclips(segmented_clips)
+                segmented_clips['mid'] = video_clip
+                video_clip = concatenate_videoclips(list(segmented_clips.values()))
 
             video_clip.write_videofile(OUTPUT)
+            try:
+                os.remove(UNDO_PATH)
+            except Exception:
+                pass
+            os.rename(PATH,UNDO_PATH)
+            os.rename(OUTPUT, PATH)
+            get_video_info()
             st.success(f'Video edited and saved')
         except Exception as e:
             st.error(f'Error editing video: {e}')
 
-        try:
-            os.remove(UNDO_PATH)
-        except Exception:
-            pass
-        os.rename(PATH,UNDO_PATH)
-        os.rename(OUTPUT, PATH)
-        get_video_info()
+        
         
 
 
