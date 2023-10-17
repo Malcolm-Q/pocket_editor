@@ -97,7 +97,17 @@ def render_audio(fx_dict):
 
         segmented_clips = []
         if 'segment' in fx_dict:
-            audio_clip = AudioFileClip(PATH).subclip(fx_dict['segment'][0],fx_dict['segment'][1])
+            if 'replace_audio' in fx_dict:
+                if isinstance(fx_dict['replace_audio'][0], str):
+                    download_or_get(fx_dict['replace_audio'][0],AUDIO_REPLACE.split('/')[0]+'/',AUDIO_REPLACE.split('/')[-1]+'mp4')
+                else:
+                    with open(AUDIO_REPLACE + fx_dict['replace_audio'][1], 'wb') as f:
+                        f.write(fx_dict['replace_audio'][0].read())
+                duration = fx_dict['segment'][1] - fx_dict['segment'][0]
+                audio_clip = AudioFileClip(AUDIO_REPLACE+fx_dict['replace_audio'][1]).set_end(duration)
+                fx_dict.pop('replace_audio')
+            else:
+                audio_clip = AudioFileClip(PATH).subclip(fx_dict['segment'][0],fx_dict['segment'][1])
             if fx_dict['segment'][0] > 0:
                 audio_clip_start = AudioFileClip(PATH).subclip(0,fx_dict['segment'][0])
                 segmented_clips.append(audio_clip_start)
@@ -109,15 +119,7 @@ def render_audio(fx_dict):
         else:
             audio_clip = AudioFileClip(PATH)
         
-        if 'replace_audio' in fx_dict:
-            if isinstance(fx_dict['replace_audio'][0], str):
-                download_or_get(fx_dict['replace_audio'][0],AUDIO_REPLACE.split('/')[0]+'/',AUDIO_REPLACE.split('/')[-1]+'mp4')
-            else:
-                with open(AUDIO_REPLACE + fx_dict['replace_audio'][1], 'wb') as f:
-                    f.write(fx_dict['replace_audio'][0].read())
-            duration = audio_clip.duration
-            audio_clip = AudioFileClip(AUDIO_REPLACE+fx_dict['replace_audio'][1],duration)
-            fx_dict.pop('replace_audio')
+        
 
         audio_clip.write_audiofile(TMP_AUDIO)
         board = Pedalboard(list(fx_dict.values()))
