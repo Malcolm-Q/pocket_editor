@@ -50,13 +50,13 @@ def render_video(vfx_dict):
 
                 if vfx_dict['segment'][0] > 0:
                     video_clip_start = VideoFileClip(PATH).subclip(0,vfx_dict['segment'][0])
-                    segmented_clip['start'] = video_clip_start
+                    segmented_clips['start'] = video_clip_start
 
                 segmented_clips['mid'] = video_clip
 
                 if vfx_dict['segment'][1] < st.session_state.duration:
                     video_clip_end = VideoFileClip(PATH).subclip(vfx_dict['segment'][1],st.session_state.duration)
-                    segmented_clips['end'].video_clip_end
+                    segmented_clips['end'] = video_clip_end
 
                 vfx_dict.pop('segment')
             else:
