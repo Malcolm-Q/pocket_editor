@@ -130,7 +130,7 @@ def main():
             vfx_dict['mirror'] = (vfx.mirror_y,{})
         
         if st.checkbox('Loop'):
-            num_loops = st.number_input('Number of Loops',value=1, min_value=st.session_state.duration)
+            num_loops = st.number_input('Number of Loops',value=1, min_value=1)
             vfx_dict['loop'] = num_loops
         
         if st.checkbox('Time Symmetrize'):
