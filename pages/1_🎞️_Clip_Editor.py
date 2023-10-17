@@ -235,15 +235,12 @@ def main():
             with tab1:
                 audio_link = st.text_input('Youtube/discord/other audio',placeholder='Paste link here...')
                 if audio_link is not None:
-                    download_or_get(audio_link,AUDIO_REPLACE.split('/')[0]+'/',AUDIO_REPLACE.split('/')[-1]+'mp4')
-                    fx_dict['replace_audio'] = True
+                    fx_dict['replace_audio'] = (audio_link,)
             with tab2:
                 audio = st.file_uploader('Upload an audio or video file',type=['mp3','wav','ogg','flac','mp4','mov','webm','avi','mkv','wmv','mpeg','ogv'])
                 if audio is not None:
                     ext = audio.filename.split('.')[-1]
-                    with open(AUDIO_REPLACE + ext, 'wb') as f:
-                        f.write(audio.read())
-                    fx_dict['replace_audio'] = True
+                    fx_dict['replace_audio'] = (audio,ext)
 
         col1,_,col_mid,_,col2 = st.columns(5)
         with col_mid:

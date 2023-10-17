@@ -110,9 +110,14 @@ def render_audio(fx_dict):
             audio_clip = AudioFileClip(PATH)
         
         if 'replace_audio' in fx_dict:
-            fx_dict.pop('replace_audio')
+            if isinstance(fx_dict['replace_audio'][0], str):
+                download_or_get(fx_dict['replace_audio'][0],AUDIO_REPLACE.split('/')[0]+'/',AUDIO_REPLACE.split('/')[-1]+'mp4')
+            else:
+                with open(AUDIO_REPLACE + fx_dict['replace_audio'][1], 'wb') as f:
+                    f.write(fx_dict['replace_audio'][0].read())
             duration = audio_clip.duration
-            audio_clip = AudioFileClip(AUDIO_REPLACE,duration)
+            audio_clip = AudioFileClip(AUDIO_REPLACE+fx_dict['replace_audio'][1],duration)
+            fx_dict.pop('replace_audio')
 
         audio_clip.write_audiofile(TMP_AUDIO)
         board = Pedalboard(list(fx_dict.values()))
