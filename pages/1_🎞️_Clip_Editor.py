@@ -235,7 +235,7 @@ def main():
             with tab1:
                 audio_link = st.text_input('Youtube/discord/other audio',placeholder='Paste link here...')
                 if audio_link is not None:
-                    fx_dict['replace_audio'] = (audio_link,)
+                    fx_dict['replace_audio'] = (audio_link,'mp4')
             with tab2:
                 audio = st.file_uploader('Upload an audio or video file',type=['mp3','wav','ogg','flac','mp4','mov','webm','avi','mkv','wmv','mpeg','ogv'])
                 if audio is not None:
