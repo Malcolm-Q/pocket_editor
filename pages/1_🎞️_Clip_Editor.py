@@ -130,8 +130,8 @@ def main():
             vfx_dict['mirror'] = (vfx.mirror_y,{})
         
         if st.checkbox('Loop'):
-            loop_duration = st.number_input('Loop Duration',value=st.session_state.duration, min_value=st.session_state.duration)
-            vfx_dict['loop'] = (vfx.loop,{'duration':loop_duration})
+            num_loops = st.number_input('Number of Loops',value=1, min_value=st.session_state.duration)
+            vfx_dict['loop'] = num_loops
         
         if st.checkbox('Time Symmetrize'):
             st.write('This effect will play the video forwards and then backwards')

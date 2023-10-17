@@ -9,6 +9,8 @@ from pedalboard import Pedalboard, Reverb, Distortion, Delay,Phaser, Bitcrush
 from pedalboard.io import AudioFile
 from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips, concatenate_audioclips
 import moviepy.video.fx.all as vfx
+import moviepy.audio.fx.all as afx
+
 
 
 PATH = os.environ['PATH']
@@ -69,10 +71,15 @@ def render_video(vfx_dict):
                 vfx_dict.pop('subclip')
             
             if 'loop' in vfx_dict:
-                if video_clip.duration > vfx_dict['loop'][1]['duration']:
-                    video_clip = video_clip.subclip(0, vfx_dict['loop']['duration'])
+                num = vfx_dict['loop']
+                audio_clip = AudioFileClip(PATH)
+                audio_clip = afx.audio_loop(audio_clip, nloops=num)
+                video_clip = vfx.loop(video_clip,n=num)
+                video_clip = video_clip.set_audio(audio_clip)
+                vfx_dict.pop('loop')
+
             if 'symmetrize' in vfx_dict:
-                video_clip = video_clip.subclip(0, video_clip.duration*2)
+                video_clip = video_clip.set_duration(video_clip.duration*2)
             
             for fx in vfx_dict.values():
                 video_clip = video_clip.fx(fx[0],**fx[1])
