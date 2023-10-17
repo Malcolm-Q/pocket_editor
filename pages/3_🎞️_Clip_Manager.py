@@ -14,6 +14,7 @@ OUT_PATH = os.environ['OUT_PATH']
 def main():
     files_and_directories = os.listdir(PATH)
     files = [f for f in files_and_directories if os.path.isfile(os.path.join(PATH, f))]
+    st.session_state.number_of_files = len(files)
 
     st.title('Video Editor')
     st.write('Clips you edit can be saved in "Clip Manager" by pressing the "save to Clip Manager" button.\n\nAlternatively you can upload/download videos below.')
@@ -21,8 +22,9 @@ def main():
     with url_tab:
         url = st.text_input('Youtube/discord/other video',placeholder='Paste link here...')
         _,_,_,col = st.columns(4)
+
         with col:
-            st.button('Download',on_click=download_or_get,args=(url,))
+            st.button('Download',on_click=download_or_get,args=(url,PATH,f'clip_{len(files)}.mp4'))
     with upload_tab:
         video = st.file_uploader('Upload a video',type=['mp4','mov','webm','avi','mkv','wmv','mpeg','ogv'])
         _,_,_,col = st.columns(4)
@@ -30,7 +32,6 @@ def main():
             st.button('Submit Uploaded Video',on_click=process_upload,args=(video,))
     st.divider()
 
-    st.session_state.number_of_files = len(files)
     if files:
         st.write('Order your videos then render them all as one video.')
         sorted_videos = sort_items(files,direction='vertical')

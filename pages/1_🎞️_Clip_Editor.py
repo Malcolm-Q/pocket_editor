@@ -5,6 +5,7 @@ from pedalboard import Pedalboard, Reverb, Distortion, Delay,Phaser, Bitcrush, P
 import moviepy.video.fx.all as vfx
 
 PATH = os.environ['PATH']
+AUDIO_REPLACE = os.environ['AUDIO_REPLACE']
 
 def main():
     if not os.path.exists(PATH):
@@ -228,6 +229,21 @@ def main():
             with st.expander('Settings'):
                 bit_depth = st.number_input('bit depth',value=0.8)
             fx_dict['bit_crush'] = Bitcrush(bit_depth)
+        
+        if st.checkbox('Replace Audio'):
+            tab1, tab2 = st.tabs(['Submit link','Upload file'])
+            with tab1:
+                audio_link = st.text_input('Youtube/discord/other audio',placeholder='Paste link here...')
+                if audio_link is not None:
+                    download_or_get(audio_link,AUDIO_REPLACE.split('/')[0]+'/',AUDIO_REPLACE.split('/')[-1]+'mp4')
+                    fx_dict['replace_audio'] = True
+            with tab2:
+                audio = st.file_uploader('Upload an audio or video file',type=['mp3','wav','ogg','flac','mp4','mov','webm','avi','mkv','wmv','mpeg','ogv'])
+                if audio is not None:
+                    ext = audio.filename.split('.')[-1]
+                    with open(AUDIO_REPLACE + ext, 'wb') as f:
+                        f.write(audio.read())
+                    fx_dict['replace_audio'] = True
 
         col1,_,col_mid,_,col2 = st.columns(5)
         with col_mid:

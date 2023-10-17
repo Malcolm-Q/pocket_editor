@@ -18,6 +18,7 @@ os.environ['AUDIO_OUTPUT'] = 'pocket_editor_tmp/audio_output.wav'
 os.environ['UNDO_PATH'] = 'pocket_editor_tmp/undoVid.mp4'
 os.environ['SAVE_PATH'] = 'pocket_editor_tmp/concat_files/'
 os.environ['OUT_PATH'] = 'pocket_editor_tmp/output/'
+os.environ['AUDIO_REPLACE'] = 'pocket_editor_tmp/audio_replace.'
 
 st.title('Pocket Editor')
 st.write('Use the sidebar to navigate to different pages.')

@@ -18,6 +18,7 @@ AUDIO_OUTPUT = os.environ['AUDIO_OUTPUT']
 SAVE_PATH = os.environ['SAVE_PATH']
 UNDO_PATH = os.environ['UNDO_PATH']
 OUT_PATH = os.environ['OUT_PATH']
+AUDIO_REPLACE = os.environ['AUDIO_REPLACE']
 
 def save_video():
     get_number_of_files()
@@ -107,6 +108,11 @@ def render_audio(fx_dict):
             fx_dict.pop('segment')
         else:
             audio_clip = AudioFileClip(PATH)
+        
+        if 'replace_audio' in fx_dict:
+            fx_dict.pop('replace_audio')
+            duration = audio_clip.duration
+            audio_clip.set_audio(AudioFileClip(AUDIO_REPLACE),duration=duration)
 
         audio_clip.write_audiofile(TMP_AUDIO)
         board = Pedalboard(list(fx_dict.values()))
@@ -146,7 +152,7 @@ def undo():
         st.error('Cannot undo further...')
 
 
-def download_or_get(url):
+def download_or_get(url,path='pocket_editor_tmp/',filename='CurrentVid.mp4'):
     if not url: return
     with st.spinner('Downloading...'):
         parsed_url = urlparse(url)
@@ -156,12 +162,13 @@ def download_or_get(url):
             yt = pytube.YouTube(url)
             stream = yt.streams.get_highest_resolution()
             
-            stream.download(output_path='pocket_editor_tmp/',filename='CurrentVid.mp4')
+            stream.download(output_path=path,filename=filename)
             st.success('Success!')
         else:
             response = requests.get(url)
+            opendir = path if path.endswith('.mp4') else PATH
             
-            with open(PATH, 'wb') as file:
+            with open(opendir, 'wb') as file:
                 file.write(response.content)
             st.toast('Success!')
         get_video_info()
