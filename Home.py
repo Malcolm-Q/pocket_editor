@@ -26,35 +26,39 @@ st.divider()
 st.markdown(
 '''
 ```
-[ Next Up ]
-- More AI Pages
-- VFX pipelines and more complex pipelines
+[ Update 0.4.0 ]
+- Replace audio option in clip editor.
+- Migration Fixes.
+```
 
+```
 [ Update 0.3.5 ]
-- Frame Interpolation Model
-- Photo Transformation Model
+- Frame Interpolation Model.
+- Photo Transformation Model.
     - Upload an image and enter an instruction of how you want it modified.
+```
 
+```
 [ Update 0.3.0 ]
-- Moviepy Migration
-    - 13 new vfx
-- UI Improvements
-- Support to add fx to only a segment of the video
+- Moviepy Migration.
+    - 13 new vfx.
+- UI Improvements.
+- Support to add fx to only a segment of the video.
     - For fx that require an effected time to be specified,
     note that the point you segment into is now the 0 second mark.
 ```
 
 ```
 [ Update 0.2.0 ]
-- Stable Diffusion
-- Illusion Diffusion
+- Stable Diffusion.
+- Illusion Diffusion.
 ```
 
 ```
 [ Update 0.1.0 ]
-- Video and audio editing
-- Pre-built pipelines
-- Clip manager
+- Video and audio editing.
+- Pre-built pipelines.
+- Clip manager.
 ```
 '''
 )

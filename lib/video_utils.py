@@ -112,7 +112,7 @@ def render_audio(fx_dict):
         if 'replace_audio' in fx_dict:
             fx_dict.pop('replace_audio')
             duration = audio_clip.duration
-            audio_clip.set_audio(AudioFileClip(AUDIO_REPLACE),duration=duration)
+            audio_clip = AudioFileClip(AUDIO_REPLACE,duration)
 
         audio_clip.write_audiofile(TMP_AUDIO)
         board = Pedalboard(list(fx_dict.values()))
