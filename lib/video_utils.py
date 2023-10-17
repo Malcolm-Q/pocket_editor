@@ -69,7 +69,7 @@ def render_video(vfx_dict):
                 vfx_dict.pop('subclip')
             
             if 'loop' in vfx_dict:
-                if video_clip.duration > vfx_dict['loop']['duration']:
+                if video_clip.duration > vfx_dict['loop'][1]['duration']:
                     video_clip = video_clip.subclip(0, vfx_dict['loop']['duration'])
             if 'symmetrize' in vfx_dict:
                 video_clip = video_clip.subclip(0, video_clip.duration*2)
