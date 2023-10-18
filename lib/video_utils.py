@@ -73,7 +73,7 @@ def render_video(vfx_dict, save_format=None):
             
             if 'overlay' in vfx_dict:
                 image = ImageClip(vfx_dict['overlay'][0])
-                image = image.resize(video_clip.w, video_clip.h//4)
+                image = image.resize((video_clip.w, video_clip.h//4))
                 image = image.set_position(vfx_dict['overlay'][1]).set_duration(video_clip.duration)
                 video_clip = CompositeVideoClip([video_clip, image])
                 vfx_dict.pop('overlay')
