@@ -28,9 +28,11 @@ def main():
     if os.path.exists(st.session_state.PATH):
         st.divider()
         st.write('Your Video:')
-        if os.path.exists(st.session_state.OUTPUT):
-            if '.gif' in st.session_state.OUTPUT:
-                st.download_button('Download Gif',data=open(st.session_state.OUTPUT,'rb'),file_name='output.gif')
+        if os.path.exists(st.session_state.PATH):
+            if '.gif' in st.session_state.PATH:
+                if st.download_button('Download Gif',data=open(st.session_state.PATH,'rb'),file_name='output.gif'):
+                    st.session_state.PATH.replace('.gif','.mp4')
+                    st.session_state.OUTPUT.replace('.gif','.mp4')
             else:
                 with open(st.session_state.PATH,'rb') as f:
                     data = f.read()

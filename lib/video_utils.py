@@ -88,7 +88,8 @@ def render_video(vfx_dict, save_format=None):
 
             if save_format == 'gif':
                 st.session_state.OUTPUT = st.session_state.OUTPUT.split('.')[0]+'.'+save_format
-                video_clip.write_gif(st.session_state.OUTPUT)
+                video_clip.write_gif(st.session_state.OUTPUT,fps=18)
+                st.session_state.PATH = st.session_state.PATH.split('.')[0]+'.'+save_format
             else:
                 video_clip.write_videofile(st.session_state.OUTPUT)
             try:
