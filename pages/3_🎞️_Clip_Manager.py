@@ -56,6 +56,6 @@ def main():
 if __name__ == '__main__':
     if not os.path.exists(st.session_state.PATH):
         os.mkdir(st.session_state.PATH)
-    if not os.path.exists(OUT_st.session_state.PATH):
+    if not os.path.exists(st.session_state.OUT_PATH):
         os.mkdir(st.session_state.OUT_PATH)
     main()
