@@ -7,7 +7,7 @@ import subprocess
 import json
 from pedalboard import Pedalboard, Reverb, Distortion, Delay,Phaser, Bitcrush
 from pedalboard.io import AudioFile
-from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips, concatenate_audioclips
+from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips, concatenate_audioclips, CompositeVideoClip
 import moviepy.video.fx.all as vfx
 import moviepy.audio.fx.all as afx
 
@@ -81,6 +81,15 @@ def render_video(vfx_dict):
             if 'symmetrize' in vfx_dict:
                 video_clip = video_clip.set_duration(video_clip.duration*2)
             
+            if 'overlay' in vfx_dict:
+                image = ImageClip(vfx_dict['overlay'][0])
+                image = image.resize(video_clip.size)
+                image = image.set_position(vfx_dict['overlay'][1]).set_duration(video_clip.duration)
+                video_clip = CompositeVideoClip([video_clip, image])
+                vfx_dict.pop('overlay')
+            
+            save_format = vfx_dict.get('format')
+            
             for fx in vfx_dict.values():
                 video_clip = video_clip.fx(fx[0],**fx[1])
             
@@ -88,7 +97,10 @@ def render_video(vfx_dict):
                 segmented_clips['mid'] = video_clip
                 video_clip = concatenate_videoclips(list(segmented_clips.values()))
 
-            video_clip.write_videofile(OUTPUT)
+            if save_format == 'gif':
+                video_clip.write_gif(OUTPUT)
+            else:
+                video_clip.write_videofile(OUTPUT)
             try:
                 os.remove(UNDO_PATH)
             except Exception:

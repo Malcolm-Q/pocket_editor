@@ -39,15 +39,22 @@ def main():
                 st.button('Run Pipeline','a',on_click=render_audio,args=({'a':Reverb(1,1,1),'b':Distortion(75)},))
             with st.expander('Draftcon'):
                 st.write('Phaser + Bitcrush\nInspired by Ethan')
-                st.button('Run Pipeline','b',on_click=render_audio,args=({'a':Phaser(),'b':Bitcrush()},))
+                st.button('Run Pipeline','b',on_click=render_audio,args=({'a':Phaser(),'b':Bitcrush(0.5)},))
         with col2:
             with st.expander('Disorienting'):
                 st.write('Delay + Reverb')
                 st.button('Run Pipeline','c',on_click=render_audio,args=({'a':Delay(0.5,0.5),'b':Reverb(1,1,1)},))
             with st.expander('House Special'):
                 st.write('Everything. Idk if this will work')
-                st.button('Run Pipeline','d',on_click=render_audio,args=({'a':Reverb(1,1,1),'b':Distortion(75),'c':Delay(0.5,0.5),'d':Bitcrush(),'e':Phaser()},))
+                st.button('Run Pipeline','d',on_click=render_audio,args=({'a':Reverb(1,1,1),'b':Distortion(75),'c':Delay(0.5,0.5),'d':Bitcrush(0.5),'e':Phaser()},))
 
+        st.divider()
+        st.write('Meme Templates')
+        col2,col3 = st.columns(2)
+        with col2:
+            with st.expander('Speech Bubble Gif'):
+                st.write('Add a speech bubble to a gif')
+                st.button('Run Pipeline','e',on_click=render_video,args=({'overlay':['pocket_editor/pipeline_files/images/speech_bubble.png', ('center','top')],'format':'gif'}))
 
 if __name__ == '__main__':
     main()
