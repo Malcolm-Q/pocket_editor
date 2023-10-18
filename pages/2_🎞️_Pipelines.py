@@ -28,13 +28,13 @@ def main():
     if os.path.exists(st.session_state.PATH):
         st.divider()
         st.write('Your Video:')
-        if '.gif' in st.session_state.OUTPUT:
-            
-            st.download_button('Download Gif',data=open(st.session_state.OUTPUT,'rb'),file_name='output.gif')
-        else:
-            with open(st.session_state.PATH,'rb') as f:
-                data = f.read()
-            st.video(data)
+        if os.path.exists(st.session_state.OUTPUT):
+            if '.gif' in st.session_state.OUTPUT:
+                st.download_button('Download Gif',data=open(st.session_state.OUTPUT,'rb'),file_name='output.gif')
+            else:
+                with open(st.session_state.PATH,'rb') as f:
+                    data = f.read()
+                st.video(data)
         col1, col2 = st.columns(2)
         with col1:
             with st.expander('The Keegan Special'):
