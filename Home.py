@@ -11,14 +11,14 @@ except:
 
 st.session_state.default_negative = 'deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime:1.4), text, close up, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck'
 
-os.environ['PATH'] = 'pocket_editor_tmp/CurrentVid.mp4'
-os.environ['OUTPUT'] = 'pocket_editor_tmp/output.mp4'
-os.environ['TMP_AUDIO'] = 'pocket_editor_tmp/audio.wav'
-os.environ['AUDIO_OUTPUT'] = 'pocket_editor_tmp/audio_output.wav'
-os.environ['UNDO_PATH'] = 'pocket_editor_tmp/undoVid.mp4'
-os.environ['SAVE_PATH'] = 'pocket_editor_tmp/concat_files/'
-os.environ['OUT_PATH'] = 'pocket_editor_tmp/output/'
-os.environ['AUDIO_REPLACE'] = 'pocket_editor_tmp/audio_replace.'
+st.session_state.PATH = 'pocket_editor_tmp/CurrentVid.mp4'
+st.session_state.OUTPUT = 'pocket_editor_tmp/output.mp4'
+st.session_state.TMP_AUDIO = 'pocket_editor_tmp/audio.wav'
+st.session_state.AUDIO_OUTPUT = 'pocket_editor_tmp/audio_output.wav'
+st.session_state.UNDO_PATH = 'pocket_editor_tmp/undoVid.mp4'
+st.session_state.SAVE_PATH = 'pocket_editor_tmp/concat_files/'
+st.session_state.OUT_PATH = 'pocket_editor_tmp/output/'
+st.session_state.AUDIO_REPLACE = 'pocket_editor_tmp/audio_replace.'
 
 st.title('Pocket Editor')
 st.write('Use the sidebar to navigate to different pages.')

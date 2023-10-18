@@ -7,8 +7,6 @@ from lib.video_utils import (
 )
 from pedalboard import Pedalboard, Reverb, Distortion, Delay,Phaser, Bitcrush
 
-PATH = os.environ['PATH']
-
 st.title('Pre-Built Pipelines')
 st.write('One Click Memes')
 
@@ -26,10 +24,10 @@ def main():
         with col:
             st.button('Submit Uploaded Video',on_click=process_upload,args=(video,))
 
-    if os.path.exists(PATH):
+    if os.path.exists(st.session_state.PATH):
         st.divider()
         st.write('Your Video:')
-        with open(PATH,'rb') as f:
+        with open(st.session_state.PATH,'rb') as f:
             data = f.read()
         st.video(data)
         col1, col2 = st.columns(2)

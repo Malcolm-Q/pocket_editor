@@ -4,11 +4,9 @@ import os
 from pedalboard import Pedalboard, Reverb, Distortion, Delay,Phaser, Bitcrush, PitchShift
 import moviepy.video.fx.all as vfx
 
-PATH = os.environ['PATH']
-AUDIO_REPLACE = os.environ['AUDIO_REPLACE']
 
 def main():
-    if not os.path.exists(PATH):
+    if not os.path.exists(st.session_state.PATH):
         st.session_state.state = 1
     if st.session_state.state == 1:
         st.title('Clip Editor')
@@ -26,13 +24,13 @@ def main():
                 st.button('Submit Uploaded Video',on_click=process_upload,args=(video,))
         _,_,col = st.columns(3)
         with col:
-            if os.path.exists(PATH):
+            if os.path.exists(st.session_state.PATH):
                 st.button('Edit Video', on_click=iterate_state)
 
     if st.session_state.state == 2:
         st.title('Edit Video')
         st.button('Save To Clip Manager',on_click=save_video, key='saveVid')
-        with open(PATH, 'rb') as f:
+        with open(st.session_state.PATH, 'rb') as f:
             downloaded_video = f.read()
         st.video(downloaded_video)
         st.divider()
@@ -162,7 +160,7 @@ def main():
     if st.session_state.state == 3:
         st.title('Add Audio Effects')
         st.button('Save To Clip Manager', on_click=save_video, key='saveAud')
-        with open(PATH, 'rb') as f:
+        with open(st.session_state.PATH, 'rb') as f:
             downloaded_video = f.read()
         st.video(downloaded_video)
         st.write('Select Effects:')
