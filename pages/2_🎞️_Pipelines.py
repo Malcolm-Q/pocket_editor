@@ -28,9 +28,13 @@ def main():
     if os.path.exists(st.session_state.PATH):
         st.divider()
         st.write('Your Video:')
-        with open(st.session_state.PATH,'rb') as f:
-            data = f.read()
-        st.video(data)
+        if '.gif' in st.session_state.OUTPUT:
+            
+            st.download_button('Download Gif',data=open(st.session_state.OUTPUT,'rb'),file_name='output.gif')
+        else:
+            with open(st.session_state.PATH,'rb') as f:
+                data = f.read()
+            st.video(data)
         col1, col2 = st.columns(2)
         with col1:
             with st.expander('The Keegan Special'):
@@ -53,7 +57,7 @@ def main():
         with col2:
             with st.expander('Speech Bubble Gif'):
                 st.write('Add a speech bubble to a gif')
-                st.button('Run Pipeline','e',on_click=render_video,args=({'overlay':['pocket_editor/pipeline_files/images/speech_bubble.png', ('center','top')],'format':'gif'}))
+                st.button('Run Pipeline','e',on_click=render_video,args=(({'overlay':['pocket_editor/pipeline_files/images/speech_bubble.png', ('center','top')]}),'gif'))
 
 if __name__ == '__main__':
     main()
