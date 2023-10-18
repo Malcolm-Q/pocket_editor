@@ -87,9 +87,10 @@ def render_video(vfx_dict, save_format=None):
                 video_clip = concatenate_videoclips(list(segmented_clips.values()))
 
             if save_format == 'gif':
-                st.session_state.OUTPUT = st.session_state.OUTPUT.split('.')[0]+'.'+save_format
-                video_clip.write_gif(st.session_state.OUTPUT,fps=18)
-                st.session_state.PATH = st.session_state.PATH.split('.')[0]+'.'+save_format
+                if os.path.exists(st.session_state.GIF): os.remove(st.session_state.GIF)
+                video_clip.write_gif(st.session_state.GIF,fps=18)
+                st.success(f'Video edited and saved')
+                return
             else:
                 video_clip.write_videofile(st.session_state.OUTPUT)
             try:

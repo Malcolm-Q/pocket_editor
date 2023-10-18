@@ -19,6 +19,7 @@ st.session_state.UNDO_PATH = 'pocket_editor_tmp/undoVid.mp4'
 st.session_state.SAVE_PATH = 'pocket_editor_tmp/concat_files/'
 st.session_state.OUT_PATH = 'pocket_editor_tmp/output/'
 st.session_state.AUDIO_REPLACE = 'pocket_editor_tmp/audio_replace.'
+st.session_state.GIF = 'pocket_editor_tmp/gif.gif'
 
 st.title('Pocket Editor')
 st.write('Use the sidebar to navigate to different pages.')
