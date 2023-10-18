@@ -31,7 +31,7 @@ def process_upload(video):
         get_video_info()
 
 
-def render_video(vfx_dict, save_format):
+def render_video(vfx_dict, save_format=None):
     with st.spinner('rendering...'):
         try:
             segmented_clips = {}
