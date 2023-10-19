@@ -115,12 +115,12 @@ def render_audio(fx_dict):
         if 'segment' in fx_dict:
             if 'replace_audio' in fx_dict:
                 if isinstance(fx_dict['replace_audio'][0], str):
-                    download_or_get(fx_dict['replace_audio'][0],AUDIO_REPLACE.split('/')[0]+'/',AUDIO_REPLACE.split('/')[-1]+'mp4')
+                    download_or_get(fx_dict['replace_audio'][0],st.session_state.AUDIO_REPLACE.split('/')[0]+'/',AUDIO_REPLACE.split('/')[-1]+'mp4')
                 else:
-                    with open(AUDIO_REPLACE + fx_dict['replace_audio'][1], 'wb') as f:
+                    with open(st.session_state.AUDIO_REPLACE + fx_dict['replace_audio'][1], 'wb') as f:
                         f.write(fx_dict['replace_audio'][0].read())
                 duration = fx_dict['segment'][1] - fx_dict['segment'][0]
-                audio_clip = AudioFileClip(AUDIO_REPLACE+fx_dict['replace_audio'][1]).set_end(duration)
+                audio_clip = AudioFileClip(st.session_state.AUDIO_REPLACE+fx_dict['replace_audio'][1]).set_end(duration)
                 fx_dict.pop('replace_audio')
             else:
                 audio_clip = AudioFileClip(st.session_state.PATH).subclip(fx_dict['segment'][0],fx_dict['segment'][1])
