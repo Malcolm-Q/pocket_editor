@@ -114,7 +114,7 @@ def build_mask(image, faces, hairs):
     input_points = faces  # 2D location of the face
     
     with torch.no_grad():
-        inputs = st.session_state.processor(image, input_points=input_points, return_tensors="pt").to(device)
+        inputs = st.session_state.processor(image, input_points=input_points, return_tensors="pt").to(st.session_state.device)
         outputs = st.session_state.sam(**inputs)
         
         masks = st.session_state.processor.image_processor.post_process_masks(
@@ -125,7 +125,7 @@ def build_mask(image, faces, hairs):
     input_points = hairs  # 2D location of the face
     
     with torch.no_grad():
-        inputs = st.session_state.processor(image, input_points=input_points, return_tensors="pt").to(device)
+        inputs = st.session_state.processor(image, input_points=input_points, return_tensors="pt").to(st.session_state.device)
         outputs = st.session_state.sam(**inputs)
         
         h_masks = st.session_state.processor.image_processor.post_process_masks(
@@ -163,7 +163,7 @@ def build_mask_multi(image, faces, hairs):
         input_points = [hair]  # 2D location of the face
         
         with torch.no_grad():
-            inputs = st.session_state.processor(image, input_points=input_points, return_tensors="pt").to(device)
+            inputs = st.session_state.processor(image, input_points=input_points, return_tensors="pt").to(st.session_state.device)
             outputs = st.session_state.sam(**inputs)
             
             h_masks = st.session_state.processor.image_processor.post_process_masks(
