@@ -37,7 +37,7 @@ if 'inpaint_pipe' not in st.session_state:
         st.session_state.inpaint_pipe = StableDiffusionControlNetInpaintPipeline.from_pretrained(
             "runwayml/stable-diffusion-inpainting", controlnet=st.session_state.controlnet, torch_dtype=torch.float16
         ).to('cuda')
-        st.session_state.pipe.scheduler = UniPCMultistepScheduler.from_config(st.session_state.pipe.scheduler.config)
+        st.session_state.pipe.scheduler = UniPCMultistepScheduler.from_config(st.session_state.inpaint_pipe.scheduler.config)
     
 if 'openpose' not in st.session_state:
     with st.spinner('Loading OpenPose'):
