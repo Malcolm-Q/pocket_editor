@@ -1,7 +1,10 @@
 import streamlit as st
-import torch
-from diffusers import StableDiffusionPipeline
-from IPython.display import clear_output
+st.title('Stable Diffusion')
+st.write('Pick and run a model')
+with st.spinner('Importing'):
+  import torch
+  from diffusers import StableDiffusionPipeline
+  from IPython.display import clear_output
 
 def main():
   model_loader, model_runner = st.tabs(['Load a Model','Run Your Model'])

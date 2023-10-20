@@ -1,21 +1,45 @@
 import os
 import streamlit as st
+st.title("Frame Interpolation")
+st.write('Blends two frames together to create a smooth transition between them.')
+st.divider()
 
-import sys
+with st.spinner('Importing'):
+    import sys
 
-import numpy as np
-import tensorflow as tf
-from moviepy.editor import concatenate_videoclips, ImageClip
-from PIL import Image
-from interp.eval import interpolator, util
+    import numpy as np
+    import tensorflow as tf
+    from moviepy.editor import concatenate_videoclips, ImageClip
+    from PIL import Image
+    from interp.eval import interpolator, util
 
-from huggingface_hub import snapshot_download
+    from huggingface_hub import snapshot_download
 
-from image_tools.sizes import resize_and_crop
+    from image_tools.sizes import resize_and_crop
 
 
 if 'interp_model' not in st.session_state:
-    st.session_state.interp_model = interpolator.Interpolator(snapshot_download(repo_id="akhaliq/frame-interpolation-film-style"), None)
+    with st.spinner('Loading model'):
+        st.session_state.interp_model = interpolator.Interpolator(snapshot_download(repo_id="akhaliq/frame-interpolation-film-style"), None)
+
+
+def main():
+    
+    st.write('Upload two images below.')
+    col1, col2 = st.columns(2)
+    with col1:
+        frame1 = st.file_uploader('Frame 1')
+        if frame1:
+            st.image(frame1)
+    with col2:
+        frame2 = st.file_uploader('Frame 2')
+        if frame2:
+            st.image(frame2)
+    
+    if frame1 and frame2:
+        times_to_interpolate = st.slider('Interpolation Amount', 1, 7, 4,help='The higher the number, the longer and smoother the output will be.')
+        st.button('Interpolate', on_click=lambda: st.video(predict(frame1, frame2, times_to_interpolate)))
+
 
 def resize(width, img):
     basewidth = width
@@ -57,25 +81,6 @@ def predict(frame1, frame2, times_to_interpolate):
     concat_clip = concatenate_videoclips(frames, method="compose")
     concat_clip.write_videofile("out.mp4", fps=30)
     return "out.mp4"
-
-def main():
-    st.title("Frame Interpolation")
-    st.write('Blends two frames together to create a smooth transition between them.')
-    st.divider()
-    st.write('Upload two images below.')
-    col1, col2 = st.columns(2)
-    with col1:
-        frame1 = st.file_uploader('Frame 1')
-        if frame1:
-            st.image(frame1)
-    with col2:
-        frame2 = st.file_uploader('Frame 2')
-        if frame2:
-            st.image(frame2)
-    
-    if frame1 and frame2:
-        times_to_interpolate = st.slider('Interpolation Amount', 1, 7, 4,help='The higher the number, the longer and smoother the output will be.')
-        st.button('Interpolate', on_click=lambda: st.video(predict(frame1, frame2, times_to_interpolate)))
 
 if __name__ == "__main__":
     main()

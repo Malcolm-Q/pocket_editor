@@ -1,10 +1,14 @@
 import streamlit as st
-import math
-import random
+st.title("Photo Transformation")
+st.write('Photoshop images with text instructions.')
+st.divider()
+with st.spinner('Importing'):
+    import math
+    import random
 
-import torch
-from PIL import Image, ImageOps
-from diffusers import StableDiffusionInstructPix2PixPipeline, EulerAncestralDiscreteScheduler
+    import torch
+    from PIL import Image, ImageOps
+    from diffusers import StableDiffusionInstructPix2PixPipeline, EulerAncestralDiscreteScheduler
 
 example_instructions = [
     "Make it a picasso painting",
@@ -30,13 +34,11 @@ def main():
         st.session_state.random_example = random.choice(example_instructions)
     if 'edited_image' not in st.session_state:
         st.session_state.edited_image = None
-    st.title("Photo Transformation")
     if 'pix2pix' not in st.session_state:
-        st.toast('Loading model...')
-        st.session_state.pix2pix = StableDiffusionInstructPix2PixPipeline.from_pretrained("timbrooks/instruct-pix2pix", torch_dtype=torch.float16, safety_checker=None).to("cuda")
-        st.session_state.pix2pix.scheduler = EulerAncestralDiscreteScheduler.from_config(st.session_state.pix2pix.scheduler.config)
-    st.write('Photoshop images with text instructions.')
-    st.divider()
+        with st.spinner('Loading model'):
+            st.session_state.pix2pix = StableDiffusionInstructPix2PixPipeline.from_pretrained("timbrooks/instruct-pix2pix", torch_dtype=torch.float16, safety_checker=None).to("cuda")
+            st.session_state.pix2pix.scheduler = EulerAncestralDiscreteScheduler.from_config(st.session_state.pix2pix.scheduler.config)
+    
     if st.session_state.edited_image is not None:
         st.image(st.session_state.edited_image, caption=st.session_state.instruct, use_column_width=True)
         with st.expander('Image doesn\'t look right?'):
