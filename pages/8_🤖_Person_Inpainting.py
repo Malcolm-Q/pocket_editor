@@ -46,7 +46,7 @@ if 'openpose' not in st.session_state:
 if 'sam' not in st.session_state:
     with st.spinner('Loading SAM (5/5)'):
         st.session_state.device = "cuda" if torch.cuda.is_available() else "cpu"
-        st.session_state.sam = SamModel.from_pretrained("facebook/sam-vit-huge").to(device)
+        st.session_state.sam = SamModel.from_pretrained("facebook/sam-vit-huge").to(st.session_state.device)
         st.session_state.processor = SamProcessor.from_pretrained("facebook/sam-vit-huge")
     st.success('Loaded')
 
