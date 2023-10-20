@@ -23,31 +23,32 @@ with st.spinner('Importing'):
     from lib.controlnet_inpaint import *
 
 if 'face_detection' not in st.session_state:
-    with st.spinner('Loading Face Detection'):
+    with st.spinner('Loading Face Detection (1/5)'):
         st.session_state.face_detection = FaceDetector()
 
 if 'controlnet' not in st.session_state:
-    with st.spinner('Loading ControlNet'):
+    with st.spinner('Loading ControlNet (2/5)'):
         st.session_state.controlnet = ControlNetModel.from_pretrained(
             "fusing/stable-diffusion-v1-5-controlnet-openpose", torch_dtype=torch.float16
         )
 
 if 'inpaint_pipe' not in st.session_state:
-    with st.spinner('Loading Pipeline'):
+    with st.spinner('Loading Pipeline (3/5)'):
         st.session_state.inpaint_pipe = StableDiffusionControlNetInpaintPipeline.from_pretrained(
             "runwayml/stable-diffusion-inpainting", controlnet=st.session_state.controlnet, torch_dtype=torch.float16
         ).to('cuda')
         st.session_state.inpaint_pipe.scheduler = UniPCMultistepScheduler.from_config(st.session_state.inpaint_pipe.scheduler.config)
     
 if 'openpose' not in st.session_state:
-    with st.spinner('Loading OpenPose'):
+    with st.spinner('Loading OpenPose (4/5)'):
         st.session_state.openpose = OpenposeDetector.from_pretrained('lllyasviel/ControlNet')
 
 if 'sam' not in st.session_state:
-    with st.spinner('Loading SAM'):
-        device = "cuda" if torch.cuda.is_available() else "cpu"
+    with st.spinner('Loading SAM (5/5)'):
+        st.session_state.device = "cuda" if torch.cuda.is_available() else "cpu"
         st.session_state.sam = SamModel.from_pretrained("facebook/sam-vit-huge").to(device)
         st.session_state.processor = SamProcessor.from_pretrained("facebook/sam-vit-huge")
+    st.success('Loaded')
 
 
 def main():
@@ -151,7 +152,7 @@ def build_mask_multi(image, faces, hairs):
         input_points = [face]  # 2D location of the face
         
         with torch.no_grad():
-            inputs = st.session_state.processor(image, input_points=input_points, return_tensors="pt").to(device)
+            inputs = st.session_state.processor(image, input_points=input_points, return_tensors="pt").to(st.session_state.device)
             outputs = st.session_state.sam(**inputs)
             
             masks = st.session_state.processor.image_processor.post_process_masks(
