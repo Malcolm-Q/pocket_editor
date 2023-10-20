@@ -22,29 +22,32 @@ with st.spinner('Importing'):
 
     from lib.controlnet_inpaint import *
 
-with st.spinner('Loading Face Detection'):
-    face_detection = FaceDetector()
+if 'face_detection' not in st.session_state:
+    with st.spinner('Loading Face Detection'):
+        st.session_state.face_detection = FaceDetector()
 
-with st.spinner('Loading ControlNet'):
-    if not 'controlnet' in globals():
-        controlnet = ControlNetModel.from_pretrained(
+if 'controlnet' not in st.session_state:
+    with st.spinner('Loading ControlNet'):
+        st.session_state.controlnet = ControlNetModel.from_pretrained(
             "fusing/stable-diffusion-v1-5-controlnet-openpose", torch_dtype=torch.float16
         )
 
-with st.spinner('Loading Pipeline'):
-    if 'pipe' not in globals():
-        pipe = StableDiffusionControlNetInpaintPipeline.from_pretrained(
+if 'inpaint_pipe' not in st.session_state:
+    with st.spinner('Loading Pipeline'):
+        st.session_state.inpaint_pipe = StableDiffusionControlNetInpaintPipeline.from_pretrained(
             "runwayml/stable-diffusion-inpainting", controlnet=controlnet, torch_dtype=torch.float16
         ).to('cuda')
-        pipe.scheduler = UniPCMultistepScheduler.from_config(pipe.scheduler.config)
+        st.session_state.pipe.scheduler = UniPCMultistepScheduler.from_config(st.session_state.pipe.scheduler.config)
     
-with st.spinner('Loading OpenPose'):
-    openpose = OpenposeDetector.from_pretrained('lllyasviel/ControlNet')
+if 'openpose' not in st.session_state:
+    with st.spinner('Loading OpenPose'):
+        st.session_state.openpose = OpenposeDetector.from_pretrained('lllyasviel/ControlNet')
 
-with st.spinner('Loading SAM'):
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    model = SamModel.from_pretrained("facebook/sam-vit-huge").to(device)
-    processor = SamProcessor.from_pretrained("facebook/sam-vit-huge")
+if 'sam' not in st.session_state:
+    with st.spinner('Loading SAM'):
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        st.session_state.sam = SamModel.from_pretrained("facebook/sam-vit-huge").to(device)
+        st.session_state.processor = SamProcessor.from_pretrained("facebook/sam-vit-huge")
 
 
 def main():
@@ -63,7 +66,7 @@ def detect_face(input):
     img = K.color.bgr_to_rgb(img.float())
     
     with torch.no_grad():
-        dets = face_detection(img)
+        dets = st.session_state.face_detection(img)
         
     return [FaceDetectorResult(o) for o in dets[0]]
 
@@ -107,10 +110,10 @@ def build_mask(image, faces, hairs):
     input_points = faces  # 2D location of the face
     
     with torch.no_grad():
-        inputs = processor(image, input_points=input_points, return_tensors="pt").to(device)
-        outputs = model(**inputs)
+        inputs = st.session_state.processor(image, input_points=input_points, return_tensors="pt").to(device)
+        outputs = st.session_state.sam(**inputs)
         
-        masks = processor.image_processor.post_process_masks(
+        masks = st.session_state.processor.image_processor.post_process_masks(
             outputs.pred_masks.cpu(), inputs["original_sizes"].cpu(), inputs["reshaped_input_sizes"].cpu()
         )
         scores = outputs.iou_scores
@@ -118,10 +121,10 @@ def build_mask(image, faces, hairs):
     input_points = hairs  # 2D location of the face
     
     with torch.no_grad():
-        inputs = processor(image, input_points=input_points, return_tensors="pt").to(device)
-        outputs = model(**inputs)
+        inputs = st.session_state.processor(image, input_points=input_points, return_tensors="pt").to(device)
+        outputs = st.session_state.sam(**inputs)
         
-        h_masks = processor.image_processor.post_process_masks(
+        h_masks = st.session_state.processor.image_processor.post_process_masks(
             outputs.pred_masks.cpu(), inputs["original_sizes"].cpu(), inputs["reshaped_input_sizes"].cpu()
         )
         h_scores = outputs.iou_scores
@@ -145,10 +148,10 @@ def build_mask_multi(image, faces, hairs):
         input_points = [face]  # 2D location of the face
         
         with torch.no_grad():
-            inputs = processor(image, input_points=input_points, return_tensors="pt").to(device)
-            outputs = model(**inputs)
+            inputs = st.session_state.processor(image, input_points=input_points, return_tensors="pt").to(device)
+            outputs = st.session_state.sam(**inputs)
             
-            masks = processor.image_processor.post_process_masks(
+            masks = st.session_state.processor.image_processor.post_process_masks(
                 outputs.pred_masks.cpu(), inputs["original_sizes"].cpu(), inputs["reshaped_input_sizes"].cpu()
             )
             scores = outputs.iou_scores
@@ -156,10 +159,10 @@ def build_mask_multi(image, faces, hairs):
         input_points = [hair]  # 2D location of the face
         
         with torch.no_grad():
-            inputs = processor(image, input_points=input_points, return_tensors="pt").to(device)
-            outputs = model(**inputs)
+            inputs = st.session_state.processor(image, input_points=input_points, return_tensors="pt").to(device)
+            outputs = st.session_state.sam(**inputs)
             
-            h_masks = processor.image_processor.post_process_masks(
+            h_masks = st.session_state.processor.image_processor.post_process_masks(
                 outputs.pred_masks.cpu(), inputs["original_sizes"].cpu(), inputs["reshaped_input_sizes"].cpu()
             )
             h_scores = outputs.iou_scores
@@ -185,12 +188,12 @@ def synthesis(image, mask, prompt="", n_prompt="", num_steps=20, seed=0, remix=T
     
     # 1. Get pose
     with torch.no_grad():
-        pose_image = openpose(image)
+        pose_image = st.session_state.openpose(image)
         pose_image=pose_image.resize(image.size)
     
     # generate image
     generator = torch.manual_seed(seed)
-    new_image = pipe(
+    new_image = st.session_state.inpaint_pipe(
         prompt,
         negative_prompt = n_prompt,
         generator=generator,
