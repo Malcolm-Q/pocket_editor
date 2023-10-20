@@ -20,6 +20,8 @@ with st.spinner('Importing'):
     from kornia.core import Tensor
     from kornia.contrib import FaceDetector, FaceDetectorResult, FaceKeypoint
 
+    from lib.controlnet_inpaint import *
+
 with st.spinner('Loading Face Detection'):
     face_detection = FaceDetector()
 
