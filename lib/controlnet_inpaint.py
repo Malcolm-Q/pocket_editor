@@ -1,3 +1,4 @@
+import streamlit as st
 from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion_controlnet import *
 import torch
 import PIL.Image
