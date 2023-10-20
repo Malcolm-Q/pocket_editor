@@ -24,9 +24,9 @@ def get_number_of_files():
     files = [f for f in files_and_directories if os.path.isfile(os.path.join(st.session_state.SAVE_PATH, f))]
     st.session_state.number_of_files = len(files)
 
-def process_upload(video):
+def process_upload(video, path = st.session_state.PATH):
     if video is not None:
-        with open(st.session_state.PATH, 'wb') as f:
+        with open(path, 'wb') as f:
             f.write(video.read())
         get_video_info()
 
@@ -112,18 +112,19 @@ def render_audio(fx_dict):
             return
 
         segmented_clips = []
-        if 'segment' in fx_dict:
-            if 'replace_audio' in fx_dict:
-                if isinstance(fx_dict['replace_audio'][0], str):
-                    download_or_get(fx_dict['replace_audio'][0],AUDIO_REPLACE.split('/')[0]+'/',AUDIO_REPLACE.split('/')[-1]+'mp4')
-                else:
-                    with open(AUDIO_REPLACE + fx_dict['replace_audio'][1], 'wb') as f:
-                        f.write(fx_dict['replace_audio'][0].read())
-                duration = fx_dict['segment'][1] - fx_dict['segment'][0]
-                audio_clip = AudioFileClip(AUDIO_REPLACE+fx_dict['replace_audio'][1]).set_end(duration)
-                fx_dict.pop('replace_audio')
+        if 'replace_audio' in fx_dict:
+            if isinstance(fx_dict['replace_audio'][0], str):
+                download_or_get(fx_dict['replace_audio'][0],AUDIO_REPLACE.split('/')[0]+'/',AUDIO_REPLACE.split('/')[-1]+'mp4')
             else:
+                with open(AUDIO_REPLACE + fx_dict['replace_audio'][1], 'wb') as f:
+                    f.write(fx_dict['replace_audio'][0].read())
+            duration = fx_dict['segment'][1] - fx_dict['segment'][0]
+            audio_clip = AudioFileClip(AUDIO_REPLACE+fx_dict['replace_audio'][1]).set_end(duration)
+
+        if 'segment' in fx_dict:
+            if not 'replace_audio' in fx_dict:    
                 audio_clip = AudioFileClip(st.session_state.PATH).subclip(fx_dict['segment'][0],fx_dict['segment'][1])
+            else: fx_dict.pop('replace_audio')
             if fx_dict['segment'][0] > 0:
                 audio_clip_start = AudioFileClip(st.session_state.PATH).subclip(0,fx_dict['segment'][0])
                 segmented_clips.append(audio_clip_start)
@@ -132,10 +133,8 @@ def render_audio(fx_dict):
                 audio_clip_end = AudioFileClip(st.session_state.PATH).subclip(fx_dict['segment'][1],st.session_state.duration)
                 segmented_clips.append(audio_clip_end)
             fx_dict.pop('segment')
-        else:
+        elif 'replace_audio' not in fx_dict:
             audio_clip = AudioFileClip(st.session_state.PATH)
-        
-        
 
         audio_clip.write_audiofile(st.session_state.TMP_AUDIO)
         board = Pedalboard(list(fx_dict.values()))

@@ -9,8 +9,8 @@ from lib.video_utils import (
 )
 
 def main():
-    files_and_directories = os.listdir(st.session_state.PATH)
-    files = [f for f in files_and_directories if os.path.isfile(os.path.join(st.session_state.PATH, f))]
+    files_and_directories = os.listdir(st.session_state.SAVE_PATH)
+    files = [f for f in files_and_directories if os.path.isfile(os.path.join(st.session_state.SAVE_PATH, f))]
     st.session_state.number_of_files = len(files)
 
     st.title('Video Editor')
@@ -21,12 +21,12 @@ def main():
         _,_,_,col = st.columns(4)
 
         with col:
-            st.button('Download',on_click=download_or_get,args=(url,st.session_state.PATH,f'clip_{len(files)}.mp4'))
+            st.button('Download',on_click=download_or_get,args=(url,st.session_state.SAVE_PATH,f'clip_{len(files)}.mp4'))
     with upload_tab:
         video = st.file_uploader('Upload a video',type=['mp4','mov','webm','avi','mkv','wmv','mpeg','ogv'])
         _,_,_,col = st.columns(4)
         with col:
-            st.button('Submit Uploaded Video',on_click=process_upload,args=(video,))
+            st.button('Submit Uploaded Video',on_click=process_upload,args=(video,st.session_state.SAVE_PATH+f'clip_{len(files)}.mp4'))
     st.divider()
 
     if files:
@@ -54,8 +54,4 @@ def main():
 
 
 if __name__ == '__main__':
-    if not os.path.exists(st.session_state.PATH):
-        os.mkdir(st.session_state.PATH)
-    if not os.path.exists(st.session_state.OUT_PATH):
-        os.mkdir(st.session_state.OUT_PATH)
     main()
