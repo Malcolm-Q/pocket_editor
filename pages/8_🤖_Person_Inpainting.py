@@ -37,7 +37,7 @@ if 'inpaint_pipe' not in st.session_state:
         st.session_state.inpaint_pipe = StableDiffusionControlNetInpaintPipeline.from_pretrained(
             "runwayml/stable-diffusion-inpainting", controlnet=st.session_state.controlnet, torch_dtype=torch.float16
         ).to('cuda')
-        st.session_state.pipe.scheduler = UniPCMultistepScheduler.from_config(st.session_state.inpaint_pipe.scheduler.config)
+        st.session_state.inpaint_pipe.scheduler = UniPCMultistepScheduler.from_config(st.session_state.inpaint_pipe.scheduler.config)
     
 if 'openpose' not in st.session_state:
     with st.spinner('Loading OpenPose'):
@@ -57,6 +57,9 @@ def main():
         prompt = st.text_input("Enter Your Prompt")
         if prompt is not None:
             st.button('Transform Image',on_click=forward,args=(None,Image.open(image),prompt))
+        
+    if 'new_image' in st.session_state:
+      st.image(Image.open(st.session_state.new_image))
 
 
 def detect_face(input):
@@ -240,7 +243,7 @@ def forward(image_cam, image_upload, prompt="", n_prompt=None, num_steps=20, see
     # synthesise
     new_image = synthesis(image,mask, prompt, n_prompt, num_steps=num_steps, seed=seed)
     
-    return new_image
+    st.session_state.new_image = new_image
 
 
 if __name__ == '__main__':
