@@ -231,6 +231,8 @@ def forward(image_cam, image_upload, prompt="", n_prompt=None, num_steps=20, see
         ratio = 512/h
         new_size = int(w*ratio), int(h*ratio)
         image = image.resize(new_size)
+        st.session_state.w = w
+        st.session_state.h = h
         
     # detect face
     dets = detect_face(image)
