@@ -9,5 +9,3 @@ accelerate
 moviepy
 image-tools
 huggingface-hub
-kornia
-controlnet-aux
