@@ -35,7 +35,7 @@ if 'controlnet' not in st.session_state:
 if 'inpaint_pipe' not in st.session_state:
     with st.spinner('Loading Pipeline'):
         st.session_state.inpaint_pipe = StableDiffusionControlNetInpaintPipeline.from_pretrained(
-            "runwayml/stable-diffusion-inpainting", controlnet=controlnet, torch_dtype=torch.float16
+            "runwayml/stable-diffusion-inpainting", controlnet=st.session_state.controlnet, torch_dtype=torch.float16
         ).to('cuda')
         st.session_state.pipe.scheduler = UniPCMultistepScheduler.from_config(st.session_state.pipe.scheduler.config)
     
