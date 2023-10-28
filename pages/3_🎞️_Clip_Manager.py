@@ -33,7 +33,7 @@ def main():
         st.write('Order your videos then render them all as one video.')
         sorted_videos = sort_items(files,direction='vertical')
         for file in sorted_videos:
-            with open(st.session_state.PATH+file, 'rb') as f:
+            with open(st.session_state.SAVE_PATH+file, 'rb') as f:
                 vid = f.read()
             st.video(vid)
         st.divider()
