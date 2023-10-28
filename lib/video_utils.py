@@ -114,12 +114,12 @@ def render_audio(fx_dict):
         segmented_clips = []
         if 'replace_audio' in fx_dict:
             if isinstance(fx_dict['replace_audio'][0], str):
-                download_or_get(fx_dict['replace_audio'][0],AUDIO_REPLACE.split('/')[0]+'/',AUDIO_REPLACE.split('/')[-1]+'mp4')
+                download_or_get(fx_dict['replace_audio'][0],st.session_state.AUDIO_REPLACE.split('/')[0]+'/',st.session_state.AUDIO_REPLACE.split('/')[-1]+'mp4')
+                st.write(st.session_state.AUDIO_REPLACE.split('/')[0]+'/',st.session_state.AUDIO_REPLACE.split('/')[-1]+'mp4')
             else:
-                with open(AUDIO_REPLACE + fx_dict['replace_audio'][1], 'wb') as f:
+                with open(st.session_state.AUDIO_REPLACE + fx_dict['replace_audio'][1], 'wb') as f:
                     f.write(fx_dict['replace_audio'][0].read())
-            duration = fx_dict['segment'][1] - fx_dict['segment'][0]
-            audio_clip = AudioFileClip(AUDIO_REPLACE+fx_dict['replace_audio'][1]).set_end(duration)
+            audio_clip = AudioFileClip(st.session_state.AUDIO_REPLACE+fx_dict['replace_audio'][1])
 
         if 'segment' in fx_dict:
             if not 'replace_audio' in fx_dict:    
@@ -135,6 +135,7 @@ def render_audio(fx_dict):
             fx_dict.pop('segment')
         elif 'replace_audio' not in fx_dict:
             audio_clip = AudioFileClip(st.session_state.PATH)
+        if fx_dict.get('replace_audio'): fx_dict.pop('replace_audio')
 
         audio_clip.write_audiofile(st.session_state.TMP_AUDIO)
         board = Pedalboard(list(fx_dict.values()))
@@ -152,7 +153,7 @@ def render_audio(fx_dict):
         else:
             audio = AudioFileClip(st.session_state.AUDIO_OUTPUT)
 
-        video = video.set_audio(audio)
+        video = video.set_audio(audio).set_duration(audio.duration)
         video.write_videofile(st.session_state.OUTPUT)
 
         os.remove(st.session_state.TMP_AUDIO)
@@ -188,7 +189,7 @@ def download_or_get(url,path='pocket_editor_tmp/',filename='CurrentVid.mp4'):
             st.success('Success!')
         else:
             response = requests.get(url)
-            opendir = path if path.endswith('.mp4') else st.session_state.PATH
+            opendir = path+filename if filename.endswith('.mp4') else st.session_state.PATH
             
             with open(opendir, 'wb') as file:
                 file.write(response.content)
