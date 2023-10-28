@@ -48,7 +48,7 @@ def main():
         st.divider()
         if st.button('Render Video',on_click=concat_video,args=(sorted_videos,)):
             st.download_button('Download Video',data=open(st.session_state.OUT_PATH+'output.mp4','rb'))
-            with open(OUT_st.session_state.PATH+'output.mp4','rb') as f:
+            with open(st.session_state.OUT_PATH+'output.mp4','rb') as f:
                 data = f.read()
             st.video(data)
 
